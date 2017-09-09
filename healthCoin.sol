@@ -19,7 +19,6 @@ contract healthCoin is Token {
     uint256 public constant _totalSupply = 2000000000; // 2 billion. uint256 will cost less gas then unit8 Ref: https://ethereum.stackexchange.com/questions/3067/why-does-uint8-cost-more-gas-than-uint256
     string public constant symbol = "HCN";
     string public constant name = "Health coin";
-    address public constant owner = 0x6a35399974126a6d739D3FA139AE64E32303DF8a; // address: Holds a 20 byte value Ref: http://solidity.readthedocs.io/en/develop/types.html
     uint256 public constant decimals = 2; // Using 2 decimals as anything more than this is cognitively too hard for regular users. 
 
     /* Variables */
@@ -33,20 +32,20 @@ contract healthCoin is Token {
      	uint256 tokens;
 	    tokens = msg.value.mul(etherConversionRate); // msg.value has the number of ethers sent to this contract. Say msg.value is .0003 then tokens = .9. But tokens is unit256 FIX
         balances[msg.sender] = balances[msg.sender].add(tokens);
-        balances[0x6a35399974126a6d739D3FA139AE64E32303DF8a] = balances[0x6a35399974126a6d739D3FA139AE64E32303DF8a].sub(tokens);       
+        balances[0x6a35399974126a6d739D3FA139AE64E32303DF8a] = balances[0x6a35399974126a6d739D3FA139AE64E32303DF8a].sub(tokens);   // hardcoding the owner address. Save gas. Keep it simple.    
     }    
 
     function healthCoin() payable{
-        balances[0x6a35399974126a6d739D3FA139AE64E32303DF8a] = _totalSupply; // giving the ethereum address the total supply.
+        balances[0x6a35399974126a6d739D3FA139AE64E32303DF8a] = _totalSupply; // giving the ethereum address of the owner the total supply.
     }
 
     function setRate(uint256 pEtherConversionRate){
-        require(msg.sender == 0x6a35399974126a6d739D3FA139AE64E32303DF8a);
+        require(msg.sender == 0x6a35399974126a6d739D3FA139AE64E32303DF8a);   // only messages from owners address can set the rate.
     	etherConversionRate = pEtherConversionRate;     
     } 
 
     function setDisableAllTrades(bool pDisableAllTrades){
-        require(msg.sender == 0x6a35399974126a6d739D3FA139AE64E32303DF8a);
+        require(msg.sender == 0x6a35399974126a6d739D3FA139AE64E32303DF8a);  // only messages from owners address can disable all trades.
     	disableAllTrades = pDisableAllTrades;     
     } 
 
