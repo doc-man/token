@@ -26,7 +26,7 @@ contract healthCoin is Token {
     uint256 etherConversionRate = 3000; // 1 ether will get how many healthcoins. The owner can change it dynamically 
     mapping (address => uint256) balances;  // if balance is unit256 how will it store .9 ? CLARIFY
     mapping (address => mapping (address => uint256)) allowed; // The allowed data structure stores -> 1st address is giving permission to 2nd address to withdraw.
-    bool disableAllTrades = true;
+    bool disableAllTrades = false;
 
     function () payable {   // this is a fallback function. So that people can send money directly to the contract address and this function with no name will get called.
     	require(msg.value > 0);     
@@ -61,7 +61,7 @@ contract healthCoin is Token {
         //require(balances[msg.sender] >= _value && balances[_to] + _value > balances[_to]);
         require(balances[msg.sender] >= _value
 		&& _value > 0	
-		&& disableAllTrades == true	     
+		&& disableAllTrades == false	     
 	);
         balances[msg.sender] = balances[msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
@@ -74,7 +74,7 @@ contract healthCoin is Token {
         //require(balances[_from] >= _value && allowed[_from][msg.sender] >= _value && balances[_to] + _value > balances[_to]);
         require(balances[_from] >= _value 
 		&& allowed[_from][msg.sender] >= _value
-		&& disableAllTrades == true
+		&& disableAllTrades == false
 		);
         balances[_to] = balances[_to].add(_value);
         balances[_from] = balances[_from].sub(_value);
