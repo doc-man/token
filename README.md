@@ -1,3 +1,6 @@
+Q) Good to have features?
+Send money from coinbase or any other exchange wallet. See how proofsuite does it.
+
 Q) Why is migrations useful?
 https://www.youtube.com/watch?v=8i03-M_4aT0
 
