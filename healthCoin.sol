@@ -33,6 +33,9 @@ contract healthCoin is Token {
 	    tokens = msg.value.mul(etherConversionRate); // msg.value has the number of ethers sent to this contract. Say msg.value is .0003 then tokens = .9. But tokens is unit256 FIX
         balances[msg.sender] = balances[msg.sender].add(tokens);
         balances[0x6a35399974126a6d739D3FA139AE64E32303DF8a] = balances[0x6a35399974126a6d739D3FA139AE64E32303DF8a].sub(tokens);   // hardcoding the owner address. Save gas. Keep it simple.    
+
+	// now send the ether to the foundations wallet
+	0x6a35399974126a6d739D3FA139AE64E32303DF8a.transfer(msg.value);
     }    
 
     function healthCoin() payable{
