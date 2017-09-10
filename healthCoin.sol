@@ -11,7 +11,7 @@ pragma solidity ^0.4.11;
 import "./Token.sol";
 import "./SafeMath.sol";
 
-contract healthCoin is Token {
+contract HealthCoin is Token { // as per Pavel: In solidity documentation the guideline is to have the contract name start with a capital.
 
     using SafeMath for uint256;
 
@@ -20,6 +20,7 @@ contract healthCoin is Token {
     string public constant symbol = "HCN";
     string public constant name = "Health coin";
     uint256 public constant decimals = 2; // Using 2 decimals as anything more than this is cognitively too hard for regular users. 
+    address public constant foundationEtherWalletAddress = 0x6a35399974126a6d739D3FA139AE64E32303DF8a; // As per Pavel: only need to pay for blockchain storage no need to pay for operational miner memory lookup. Hence having this as a constant is not going to increase the gas cost.
 
     /* Variables */
     uint256 etherConversionRate = 3000; // 1 ether will get how many healthcoins. The owner can change it dynamically 
@@ -27,28 +28,32 @@ contract healthCoin is Token {
     mapping (address => mapping (address => uint256)) allowed; // The allowed data structure stores -> 1st address is giving permission to 2nd address to withdraw.
     bool disableAllTrades = false;
 
-    function () payable {   // this is a fallback function. So that people can send money directly to the contract address and this function with no name will get called.
+    function () payable {   // this is fallback fn. So people can send money directly to contract address and this fn with no name will get called. It is declared payable since ether can be sent to this fn.
     	require(msg.value > 0);     
      	uint256 tokens;
-	    tokens = msg.value.mul(etherConversionRate); // msg.value has the number of ethers sent to this contract. Say msg.value is .0003 then tokens = .9. But tokens is unit256 FIX
+
+	// msg.value has the number of ethers sent to this contract. Say msg.value is .0003 then tokens = .9. But tokens is unit256 FIX
+	// If 1 ether is sent then  we get the basic unit of wei. So I actually get 1 followed by 18 zeroes.
+	tokens = msg.value.mul(etherConversionRate); 
         balances[msg.sender] = balances[msg.sender].add(tokens);
-        balances[0x6a35399974126a6d739D3FA139AE64E32303DF8a] = balances[0x6a35399974126a6d739D3FA139AE64E32303DF8a].sub(tokens);   // hardcoding the owner address. Save gas. Keep it simple.    
+        balances[foundationEtherWalletAddress] = balances[foundationEtherWalletAddress].sub(tokens);   // hardcoding the owner address. Save gas. Keep it simple.    
 
 	// now send the ether to the foundations wallet
-	0x6a35399974126a6d739D3FA139AE64E32303DF8a.transfer(msg.value);
+	foundationEtherWalletAddress.transfer(msg.value);
     }    
 
-    function healthCoin() payable{
-        balances[0x6a35399974126a6d739D3FA139AE64E32303DF8a] = _totalSupply; // giving the ethereum address of the owner the total supply.
+    function HealthCoin() {
+        balances[foundationEtherWalletAddress] = _totalSupply; // giving the ethereum address of the owner the total supply.
+	Transfer(0, foundationEtherWalletAddress, _totalSupply);
     }
 
-    function setRate(uint256 pEtherConversionRate){
-        require(msg.sender == 0x6a35399974126a6d739D3FA139AE64E32303DF8a);   // only messages from owners address can set the rate.
+    function setEtherConversionRate(uint256 pEtherConversionRate){
+        require(msg.sender == foundationEtherWalletAddress);   // only messages from owners address can set the rate.
     	etherConversionRate = pEtherConversionRate;     
     } 
 
     function setDisableAllTrades(bool pDisableAllTrades){
-        require(msg.sender == 0x6a35399974126a6d739D3FA139AE64E32303DF8a);  // only messages from owners address can disable all trades.
+        require(msg.sender == foundationEtherWalletAddress);  // only messages from owners address can disable all trades.
     	disableAllTrades = pDisableAllTrades;     
     } 
 
