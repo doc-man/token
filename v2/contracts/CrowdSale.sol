@@ -4,7 +4,7 @@ import './HealthToken.sol';
 import './SafeMath.sol';
 import './Ownable.sol';
 
-contract Crowdsale is Ownable {
+contract CrowdSale is Ownable {
   using SafeMath for uint256;
 
 
