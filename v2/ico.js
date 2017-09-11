@@ -72,95 +72,29 @@ jQuery(document).ready(function($) {
 
 
     $('#loadInfo', '#crowdsaleContractForm').click(function(){
-        printError(null);
-        if(!isWeb3Connected()) return;
-        if(!dfsTokenContract) {printError('Load contracts first!'); return;}
-
-        let publishedAddress = $('input[name=crowdsaleAddress]', '#crowdsaleContractForm').val();
-
-        let contractObj = web3.eth.contract(dfsCrowdsaleContract.abi);
-        let contractInstance = contractObj.at(publishedAddress);
-        //console.log(contractInstance);
-
-
-        contractInstance.startTimestamp(function(error, result){
-            parseContractPropertyResponce(error, result, function(){
-                var timestamp = result.toNumber();
-                var timestr = (new Date(timestamp*1000)).toISOString();
-                $('input[name=startTime]', '#crowdsaleContractForm').val(timestr);
-            });
-        });
-        contractInstance.endTimestamp(function(error, result){
-            parseContractPropertyResponce(error, result, function(){
-                var timestamp = result.toNumber();
-                var timestr = (new Date(timestamp*1000)).toISOString();
-                $('input[name=endTime]', '#crowdsaleContractForm').val(timestr);
-            });
-        });
-        contractInstance.crowdsaleRunning(function(error, result){
-            parseContractPropertyResponce(error, result, function(){
-                console.log(result);
-                $('input[name=isRunning]', '#crowdsaleContractForm').val(result);
-            });
-        });
         contractInstance.price(function(error, result){
             parseContractPropertyResponce(error, result, function(){
                 var price = result.toFixed();
                 $('input[name=price]', '#crowdsaleContractForm').val(price);
             });
         });
-        contractInstance.availableSupply(function(error, result){
-            parseContractPropertyResponce(error, result, function(){
-                var units = result.toFixed();
-                var amount = web3.fromWei(units, 'ether');
-                $('input[name=availableSupply]', '#crowdsaleContractForm').val(amount);
-            });
-        });
-        web3.eth.getBalance(publishedAddress, function(error, result){
-            parseContractPropertyResponce(error, result, function(){
-                var wei = result.toFixed();
-                var amount = web3.fromWei(wei, 'ether');
-                $('input[name=contractBalance]', '#crowdsaleContractForm').val(amount);
-            });
-        });
-
     });
 
-    $('#withdraw', '#crowdsaleContractForm').click(function(){
+    $('#setPrice', '#crowdsaleContractForm').click(function(){
         printError(null);
         if(!isWeb3Connected()) return;
-        if(!dfsTokenContract) {printError('Load contracts first!'); return;}
+        if(!tokenContract) {printError('Load contracts first!'); return;}
 
         let publishedAddress = $('input[name=crowdsaleAddress]', '#crowdsaleContractForm').val();
 
-        let contractObj = web3.eth.contract(dfsCrowdsaleContract.abi);
+        let contractObj = web3.eth.contract(crowdsaleContract.abi);
         let contractInstance = contractObj.at(publishedAddress);
 
-        let _withdrawAmount = $('input[name=withdrawAmount]', '#crowdsaleContractForm').val();
-        var withdrawAmount = web3.toWei(_withdrawAmount, 'ether');
+        let price = Math.round($('input[name=withdrawAmount]', '#crowdsaleContractForm').val());
 
-        console.log('Withdrawing '+withdrawAmount+' wei from '+contractInstance.address); 
-        contractInstance.withdrawFunds(withdrawAmount, function(error, result){
+        contractInstance.setPrice(price, function(error, result){
             if(!error){
-                console.log("Withdraw tx:",result);    
-            }else{
-                console.error(error)
-            }
-        });
-    });
-    $('#finalize', '#crowdsaleContractForm').click(function(){
-        printError(null);
-        if(!isWeb3Connected()) return;
-        if(!dfsTokenContract) {printError('Load contracts first!'); return;}
-
-        let publishedAddress = $('input[name=crowdsaleAddress]', '#crowdsaleContractForm').val();
-
-        let contractObj = web3.eth.contract(dfsCrowdsaleContract.abi);
-        let contractInstance = contractObj.at(publishedAddress);
-
-        contractInstance.finalizeCrowdsale(function(error, result){
-            if(!error){
-                console.log("ICO finalization tx: ",result);    
+                console.log("ICO setPrice tx: ",result);    
             }else{
                 console.error(error)
             }

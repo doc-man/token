@@ -1,1 +1,1 @@
-body{padding:20px}.error{color:red}input.ethAddress,input.ethTx{width:30em}.abi{display:block;width:100%;height:3em}#publishContractForm label{display:block}
+body{padding:20px}.error{color:red}input.ethAddress,input.ethTx{width:30em}.abi{display:block;width:100%;height:3em}#crowdsaleContractForm label,#publishContractForm label{display:block}
