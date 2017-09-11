@@ -18,6 +18,21 @@ contract CrowdSale is Ownable {
 
   HealthToken public hlt;
 
+  /**
+   * event for token purchase logging
+   * @param purchaser who paid for the tokens
+   * @param beneficiary who got the tokens
+   * @param value weis paid for purchase
+   * @param amount amount of tokens purchased
+   */ 
+  event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
+
+  modifier canSell(){
+    //assert(price > 0);
+    if(price == 0) return;  //if crowdsale not started or paused it's better not to eat all transaction gas,  as with assert()
+    _;
+  }
+
   function CrowdSale(address _foundationAddress, address _founderAddress){
     foundationAddress = _foundationAddress;
     founderAddress = _founderAddress;
@@ -28,11 +43,16 @@ contract CrowdSale is Ownable {
   function setPrice(uint256 _price) public onlyOwner {
     price = _price;
   }
+  
   function() payable {
-    assert(price > 0);
+    saleTo(msg.sender);
+  }
+
+  function saleTo(address buyer) public payable canSell {
     uint256 tokens = msg.value.mul(price);
-    hlt.sell(foundationAddress, msg.sender, tokens);
+    hlt.sell(foundationAddress, buyer, tokens);
     foundationAddress.transfer(msg.value);
+    TokenPurchase(msg.sender, buyer, msg.value, tokens);
   }
 
 }
