@@ -3,7 +3,7 @@ jQuery(document).ready(function($) {
     $(window).on("load", isWeb3Available);
     initCrowdsaleForm();
     const tokenContractUrl       = './build/contracts/HealthToken.json';
-    const crowdsaleContractUrl   = './build/contracts/Crowdsale.json';
+    const crowdsaleContractUrl   = './build/contracts/CrowdSale.json';
     let tokenContract;
     let crowdsaleContract;
 
@@ -72,6 +72,15 @@ jQuery(document).ready(function($) {
 
 
     $('#loadInfo', '#crowdsaleContractForm').click(function(){
+        printError(null);
+        if(!isWeb3Connected()) return;
+        if(!tokenContract) {printError('Load contracts first!'); return;}
+
+        let publishedAddress = $('input[name=crowdsaleAddress]', '#crowdsaleContractForm').val();
+
+        let contractObj = web3.eth.contract(crowdsaleContract.abi);
+        let contractInstance = contractObj.at(publishedAddress);
+
         contractInstance.price(function(error, result){
             parseContractPropertyResponce(error, result, function(){
                 var price = result.toFixed();
