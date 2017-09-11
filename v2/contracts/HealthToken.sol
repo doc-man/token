@@ -12,7 +12,7 @@ contract HealthToken is StandardToken, Ownable {
   uint8 public constant decimals = 18;  
  
 
-  function HealthToken(address foundation, uint256 foundationSupply, address founder, uint256 founderSupply) {
+  function init(address foundation, uint256 foundationSupply, address founder, uint256 founderSupply) onlyOwner {
     balances[foundation] = foundationSupply;
     balances[founder] = founderSupply;
     totalSupply = foundationSupply + founderSupply;
