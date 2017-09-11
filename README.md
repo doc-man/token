@@ -1,3 +1,17 @@
+What are the desired features?
+1. We want the token token supply to be 1.2 billion.
+
+2. We want the sale to be divided into 3 periods
+Pre sale period 1: Price is 70 cents 90 to 60 days
+Pre sale period 2: Price is 80 cents 60 to 30 days 
+Pre sale period 3: Price is 90 cents 30 days to 1 day
+ICO: Price is $1
+After ICO the price increase with the following formula:
+MAX(1,amount raised / 10 million USD)
+
+3. Have a variable called rate that can be used to change the conversion rate.
+
+
 Q) Good to have features?
 Send money from coinbase or any other exchange wallet. See how proofsuite does it.
 
