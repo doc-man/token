@@ -3,7 +3,7 @@ jQuery(document).ready(function($) {
     $(window).on("load", isWeb3Available);
     initCrowdsaleForm();
     const tokenContractUrl       = './build/contracts/HealthToken.json';
-    const crowdsaleContractUrl   = './build/contracts/Crowdsale.json';
+    const crowdsaleContractUrl   = './build/contracts/CrowdSale.json';
     let tokenContract;
     let crowdsaleContract;
 
