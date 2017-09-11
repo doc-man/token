@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HealthToken ICO Admin</title>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel='stylesheet' href='./ico.css' type='text/css'/>
+    <script type="text/javascript" src="ico.js"></script>
+</head>
+<body>
+<h1>HealthToken ICO Admin</h1>
+<div class="error" id="errormsg"></div>
+
+<h2>0. Load contracts</h2>
+<form id="loadContractsForm">
+    <label>HealthToken Token ABI:
+        <textarea id="tokenABI" class="abi" readonly></textarea>
+    </label>
+    <label>HealthToken Crowdsale ABI:
+        <textarea id="crowdsaleABI"  class="abi" readonly></textarea>
+    </label>
+    <input type="button" id="loadContractsBtn" value="Load contracts">
+</form>
+
+<h2>1. Publish Contracts</h2>
+<form id="publishContractForm">
+    <label>foundationAddress: <input type="text" name="foundationAddress" value="" class="ethAddress"></label>
+    <label>founderAddress: <input type="text" name="founderAddress" value="" class="ethAddress"></label>
+
+
+    <input type="button" id="publishContract" value="Publish">
+    <label for="publishedTx">Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label>
+    <label for="publishedCrowdsaleAddress">Crowdsale Published at: <input type="text" name="publishedCrowdsaleAddress" value="" class="ethAddress"></label>
+    <label for="publishedTokenAddress">Token Published at: <input type="text" name="publishedTokenAddress" value="" class="ethAddress"></label>
+</form>
+
+<h2>2. Set price </h2>
+<form id="crowdsaleContractForm">
+    <label for="crowdsaleAddreoadInfo"ss">Crowdsale at: <input type="text" name="crowdsaleAddress" value="" class="ethAddress"></label>
+    <label>Price (HLT per ETH): <input type="number" name="price" value="" class="time"></label>
+    <input type="button" id="withdraw" value="Set Price">
+</form>
+
+</body>
+</html>
