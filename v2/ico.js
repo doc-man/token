@@ -99,8 +99,9 @@ jQuery(document).ready(function($) {
         let contractObj = web3.eth.contract(crowdsaleContract.abi);
         let contractInstance = contractObj.at(publishedAddress);
 
-        let price = Math.round($('input[name=withdrawAmount]', '#crowdsaleContractForm').val());
+        let price = Math.round($('input[name=price]', '#crowdsaleContractForm').val());
 
+        console.log('Set price on'+crowdsaleContract.contract_name+' with parameters:\n', price);
         contractInstance.setPrice(price, function(error, result){
             if(!error){
                 console.log("ICO setPrice tx: ",result);    
