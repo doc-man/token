@@ -7,12 +7,13 @@ import './Ownable.sol';
 contract CrowdSale is Ownable {
   using SafeMath for uint256;
 
+  uint256 public constant TOTAL_SUPPLY = 1200000000 ether;
+  uint256 public constant FOUNDATION_SUPPLY = TOTAL_SUPPLY*80/100;
+  uint256 public constant FOUNDER_SUPPLY = TOTAL_SUPPLY*20/100; 
+
 
   address public foundationAddress;
   address public founderAddress;
-  uint256 public constant totalSupply = 1200000000 ether;
-  uint256 public constant foundationSupply = totalSupply*80/100;
-  uint256 public constant founderSupply = totalSupply*20/100; 
   uint256 public price; //how many HLT we will send for 1 ETH;
 
   HealthToken public hlt;
@@ -21,7 +22,7 @@ contract CrowdSale is Ownable {
     foundationAddress = _foundationAddress;
     founderAddress = _founderAddress;
     hlt = new HealthToken();
-    hlt.init(foundationAddress, foundationSupply, founderAddress, founderSupply);
+    hlt.init(foundationAddress, FOUNDATION_SUPPLY, founderAddress, FOUNDER_SUPPLY);
   }
 
   function setPrice(uint256 _price) public onlyOwner {
