@@ -9,7 +9,9 @@ contract CrowdSale is Ownable {
 
   uint256 public constant TOTAL_SUPPLY = 1200000000 ether;
   uint256 public constant FOUNDATION_SUPPLY = TOTAL_SUPPLY*80/100;
-  uint256 public constant FOUNDER_SUPPLY = TOTAL_SUPPLY*20/100; 
+  uint256 public constant FOUNDER_SUPPLY = TOTAL_SUPPLY*20/100;
+  uint256 public constant PARTNER_BONUS = 2; //percent of referral partner bonus
+  uint256 public constant REFERRAL_BONUS = 4; //percent of referrer bonus
 
 
   address public foundationAddress;
@@ -45,14 +47,33 @@ contract CrowdSale is Ownable {
   }
   
   function() payable {
-    saleTo(msg.sender);
+    saleTo(msg.sender, 0x0);
   }
 
-  function saleTo(address buyer) public payable canSell {
-    uint256 tokens = msg.value.mul(price);
-    hlt.sell(foundationAddress, buyer, tokens);
-    foundationAddress.transfer(msg.value);
-    TokenPurchase(msg.sender, buyer, msg.value, tokens);
+  function saleTo(address buyer, address partner) public payable canSell {
+    uint256  = msg.value.mul(price);
+    if(partner == 0x0){
+      hlt.send(foundationAddress, buyer, tokens);
+      assert(foundationAddress.transfer(msg.value));
+      TokenPurchase(msg.sender, buyer, msg.value, tokens);
+    }else{
+      uint256 partnerTokens   = tokens.mul(PARTNER_BONUS).div(100);
+      uint256 referralTokens  = tokens.mul(REFERRAL_BONUS).div(100);
+      uint256 totalBuyerTokens = tokens.add(referralTokens);
+      assert(hlt.send(foundationAddress, buyer, totalBuyerTokens));
+      assert(hlt.send(foundationAddress, partner, partnerTokens));
+      TokenPurchase(msg.sender, buyer, msg.value, totalBuyerTokens);
+    }
+  }
+
+  function tokensAvailable() public constant {
+    return hlt.balances[foundationAddress];
+  }
+
+  function setFoundation(address newFoundationAddress) onlyOwner {
+    uint256 oldFoundationTokens = hlt.balances[foundationAddress];
+    assert(hlt.send(foundationAddress, newFoundationAddress, oldFoundationTokens));
+    foundationAddress = newFoundationAddress;
   }
 
 }

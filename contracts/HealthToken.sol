@@ -20,10 +20,10 @@ contract HealthToken is StandardToken, Ownable {
     Transfer(0x0, founder, founderSupply);
   }
 
-  function sell(address foundation, address buyer, uint256 amount) onlyOwner returns (bool){
-    balances[foundation] = balances[foundation].sub(amount);
-    balances[buyer] = balances[buyer].add(amount);
-    Transfer(foundation, buyer, amount);
+  function send(address from, address to, uint256 amount) onlyOwner returns (bool){
+    balances[from] = balances[from].sub(amount);
+    balances[to] = balances[to].add(amount);
+    Transfer(from, to, amount);
     return true;
   }
 }
