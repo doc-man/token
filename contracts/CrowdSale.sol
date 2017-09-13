@@ -1,5 +1,11 @@
 pragma solidity ^0.4.11;
 
+/* TODO
+- how do we now when crowdsale os finished?
+- do we really need to store founderAddress?
+*/
+
+
 import './HealthToken.sol';
 import './SafeMath.sol';
 import './Ownable.sol';
@@ -51,10 +57,9 @@ contract CrowdSale is Ownable {
   }
 
   function saleTo(address buyer, address partner) public payable canSell {
-    uint256  = msg.value.mul(price);
+    uint256 tokens  = msg.value.mul(price);
     if(partner == 0x0){
       hlt.send(foundationAddress, buyer, tokens);
-      assert(foundationAddress.transfer(msg.value));
       TokenPurchase(msg.sender, buyer, msg.value, tokens);
     }else{
       uint256 partnerTokens   = tokens.mul(PARTNER_BONUS).div(100);
@@ -64,14 +69,15 @@ contract CrowdSale is Ownable {
       assert(hlt.send(foundationAddress, partner, partnerTokens));
       TokenPurchase(msg.sender, buyer, msg.value, totalBuyerTokens);
     }
+    foundationAddress.transfer(msg.value);
   }
 
-  function tokensAvailable() public constant {
-    return hlt.balances[foundationAddress];
+  function tokensAvailable() public constant returns(uint256){
+    return hlt.getBalance(foundationAddress); 
   }
 
   function setFoundation(address newFoundationAddress) onlyOwner {
-    uint256 oldFoundationTokens = hlt.balances[foundationAddress];
+    uint256 oldFoundationTokens = hlt.getBalance(foundationAddress);
     assert(hlt.send(foundationAddress, newFoundationAddress, oldFoundationTokens));
     foundationAddress = newFoundationAddress;
   }
