@@ -1,11 +1,8 @@
 pragma solidity ^0.4.11;
 
 import './CrowdSale.sol';
-import './SafeMath.sol';
 
-contract ProxyCrowdSale is Ownable {
-  using SafeMath for uint256;
-
+contract ProxyCrowdSale {
   CrowdSale public sale;
 
   function ProxyCrowdSale(CrowdSale _sale){
