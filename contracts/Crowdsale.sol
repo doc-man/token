@@ -42,7 +42,7 @@ contract Crowdsale is Ownable {
     saleTo(msg.sender, 0x0);
   }
 
-  function saleTo(address buyer, address partner) public payable canSell {
+  function saleTo(address buyer, address partner) public payable {
     require(price > 0);
     uint256 tokens  = msg.value.mul(price);
     if(partner == 0x0){
@@ -62,9 +62,6 @@ contract Crowdsale is Ownable {
   function tokensAvailable() public constant returns(uint256){
     return hlt.getBalance(foundationAddress); 
   }
-  function hasEnoughTokens(uint256 tokensRequired) internal constant return(bool){
-    return hlt.getBalance(foundationAddress) >= tokensRequired;
-  }
 
   function setFoundation(address newFoundationAddress) onlyOwner {
     uint256 oldFoundationTokens = hlt.getBalance(foundationAddress);
@@ -72,11 +69,11 @@ contract Crowdsale is Ownable {
     foundationAddress = newFoundationAddress;
   }
 
-  function setReferralBonus(unit256 _referralBonus ) onlyOwner {
+  function setReferralBonus(uint256 _referralBonus ) onlyOwner {
      referralBonus = _referralBonus;
   }
 
-  function setPartnerBonus(unit256  _partnerBonus) onlyOwner {
+  function setPartnerBonus(uint256  _partnerBonus) onlyOwner {
      partnerBonus = _partnerBonus;
   }
 

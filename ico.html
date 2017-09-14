@@ -19,6 +19,12 @@
     <label>HealthToken Crowdsale ABI:
         <textarea id="crowdsaleABI"  class="abi" readonly></textarea>
     </label>
+    <label>HealthToken Partner Crowdsale ABI:
+        <textarea id="partnerContractABI"  class="abi" readonly></textarea>
+    </label>
+    <label>HealthToken Personal Crowdsale ABI:
+        <textarea id="personalContractABI"  class="abi" readonly></textarea>
+    </label>
     <input type="button" id="loadContractsBtn" value="Load contracts">
 </form>
 
@@ -44,7 +50,7 @@
 
 
 
-<h2>1. Publish Partner Contract</h2>
+<h2>3. Publish Partner Contract</h2>
 <form id="publishPartnerContractForm"  class="contractForm">
     <label for="crowdsaleAddress">Crowdsale at: <input type="text" name="crowdsaleAddress" value="" class="ethAddress"></label>
     <label for="partnerAddress">Partner address: <input type="text" name="partnerAddress" value="" class="ethAddress"></label>
@@ -52,8 +58,22 @@
 
     <input type="button" id="publishPartnerContract" value="Publish">
     <label for="publishedTx">Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label>
-    <label for="publishedCrowdsaleAddress">Crowdsale Published at: <input type="text" name="publishedCrowdsaleAddress" value="" class="ethAddress"></label>
+    <label for="publishedCrowdsaleAddress">Partner crowdsale published at: <input type="text" name="publishedCrowdsaleAddress" value="" class="ethAddress"></label>
 </form>
+
+<h2>4. Publish Personal Contract</h2>
+<form id="publishPersonalContractForm"  class="contractForm">
+    <label for="crowdsaleAddress">Crowdsale at: <input type="text" name="crowdsaleAddress" value="" class="ethAddress"></label>
+    <label for="partnerAddress">Partner address: <input type="text" name="partnerAddress" value="0" class="ethAddress"></label>
+    <label for="accessKey">Access Key: <input type="text" name="accessKey" value="" placeholder="id|password|salt" class="string">
+        <input type="button" id="generateAccessKeyHash" value="Generate Hash"></label>
+    <label for="accessKeyHash">Access Key SHA3 Hash: <input type="text" name="accessKeyHash" value="" class="string"></label>
+
+    <input type="button" id="publishPersonalContract" value="Publish">
+    <label for="publishedTx">Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label>
+    <label for="publishedCrowdsaleAddress">Personal crowdsale published at: <input type="text" name="publishedCrowdsaleAddress" value="" class="ethAddress"></label>
+</form>
+
 
 </body>
 </html>

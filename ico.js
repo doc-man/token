@@ -5,9 +5,11 @@ jQuery(document).ready(function($) {
     const tokenContractUrl       = './build/contracts/HealthToken.json';
     const crowdsaleContractUrl   = './build/contracts/Crowdsale.json';
     const partnerContractUrl     = './build/contracts/PartnerCrowdsale.json';
+    const personalContractUrl     = './build/contracts/PersonalCrowdsale.json';
     let tokenContract;
     let crowdsaleContract;
     let partnerContract;
+    let personalContract;
 
 
     function initCrowdsaleForm(){
@@ -30,7 +32,10 @@ jQuery(document).ready(function($) {
             partnerContract = data;
             $('#partnerContractABI').text(JSON.stringify(partnerContract.abi));
         });
-
+        $.ajax(partnerContractUrl,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(function( data ) {
+            partnerContract = data;
+            $('#personalContractABI').text(JSON.stringify(personalContract.abi));
+        });
     });
 
 
@@ -130,7 +135,7 @@ jQuery(document).ready(function($) {
         let contractObj = web3.eth.contract(partnerContract.abi);
         console.log('Creating contract '+partnerContract.contract_name+' with parameters:\n', 
             crowdsaleAddress, partnerAddress,
-            'ABI', JSON.stringify(crowdsaleContract.abi));
+            'ABI', JSON.stringify(partnerContract.abi));
         let contractInstance = contractObj.new(
             crowdsaleAddress, partnerAddress,
             {
@@ -141,6 +146,42 @@ jQuery(document).ready(function($) {
                 waitForContractCreation(error, contract, 
                     $('input[name=publishedTx]','#publishPartnerContractForm'),
                     $('input[name=publishedCrowdsaleAddress]','#publishPartnerContractForm'),
+                );
+            }
+        );
+
+    });
+
+    $('#generateAccessKeyHash','#publishPersonalContractForm').click(function(){
+        printError(null);
+        if(!isWeb3Connected()) return;
+        let key = $('input[name=accessKey]', '#publishPersonalContractForm').val();
+        let hash = web3.sha3(key);
+        $('input[name=accessKeyHash]', '#publishPersonalContractForm').val(hash);
+    });
+    $('#publishPersonalContract', '#publishPersonalContractForm').click(function(){
+        printError(null);
+        if(!isWeb3Connected()) return;
+        if(!tokenContract) {printError('Load contracts first!'); return;}
+
+        let crowdsaleAddress = $('input[name=crowdsaleAddress]', '#publishPersonalContractForm').val();
+        let partnerAddress = $('input[name=partnerAddress]', '#publishPersonalContractForm').val();
+        let accessKeyHash = $('input[name=accessKeyHash]', '#publishPersonalContractForm').val();
+
+        let contractObj = web3.eth.contract(personalContract.abi);
+        console.log('Creating contract '+personalContract.contract_name+' with parameters:\n', 
+            crowdsaleAddress, partnerAddress, accessKeyHash,
+            'ABI', JSON.stringify(personalContract.abi));
+        let contractInstance = contractObj.new(
+            crowdsaleAddress, partnerAddress, accessKeyHash
+            {
+                from: web3.eth.accounts[0], 
+                data: personalContract.unlinked_binary,
+            },
+            function(error, contract){
+                waitForContractCreation(error, contract, 
+                    $('input[name=publishedTx]','#publishPersonalContractForm'),
+                    $('input[name=publishedCrowdsaleAddress]','#publishPersonalContractForm'),
                 );
             }
         );
