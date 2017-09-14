@@ -74,6 +74,15 @@
     <label for="publishedCrowdsaleAddress">Personal crowdsale published at: <input type="text" name="publishedCrowdsaleAddress" value="" class="ethAddress"></label>
 </form>
 
+<h2>5. Claim tokens from Personal Contract</h2>
+<form id="claimFromPersonalContractForm"  class="contractForm">
+    <label for="crowdsaleAddress">Personal crowdsale at: <input type="text" name="crowdsaleAddress" value="" class="ethAddress"></label>
+    <label for="toAddress">Claim to address: <input type="text" name="toAddress" value="0" class="ethAddress"></label>
+    <label for="accessKey">Access Key: <input type="text" name="accessKey" value="" placeholder="id|password|salt" class="string"></label>
+
+    <input type="button" id="claimFromPersonalContract" value="Claim">
+    <label for="publishedTx">Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label>
+</form>
 
 </body>
 </html>
