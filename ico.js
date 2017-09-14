@@ -123,8 +123,8 @@ jQuery(document).ready(function($) {
         if(!isWeb3Connected()) return;
         if(!tokenContract) {printError('Load contracts first!'); return;}
 
-        let crowdsaleAddress = $('input[name=CrowdsaleAddress]', '#publishPartnerContractForm').val();
-        let partnerAddress = $('input[name=founderAddress]', '#publishContractForm').val();
+        let crowdsaleAddress = $('input[name=crowdsaleAddress]', '#publishPartnerContractForm').val();
+        let partnerAddress = $('input[name=partnerAddress]', '#publishPartnerContractForm').val();
 
 
         let contractObj = web3.eth.contract(partnerContract.abi);
