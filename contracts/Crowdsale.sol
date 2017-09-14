@@ -10,8 +10,8 @@ contract Crowdsale is Ownable {
   uint256 public constant TOTAL_SUPPLY = 1200000000 ether;
   uint256 public constant FOUNDATION_SUPPLY = TOTAL_SUPPLY*80/100;
   uint256 public constant FOUNDER_SUPPLY = TOTAL_SUPPLY*20/100;
-  uint256 public constant PARTNER_BONUS = 2; //percent of referral partner bonus
-  uint256 public constant REFERRAL_BONUS = 4; //percent of referrer bonus
+  uint256 public partnerBonus = 2; //percent of referral partner bonus
+  uint256 public referralBonus = 4; //percent of referrer bonus
 
 
   address public foundationAddress;
@@ -54,8 +54,8 @@ contract Crowdsale is Ownable {
       hlt.send(foundationAddress, buyer, tokens);
       TokenPurchase(msg.sender, buyer, msg.value, tokens);
     }else{
-      uint256 partnerTokens   = tokens.mul(PARTNER_BONUS).div(100);
-      uint256 referralTokens  = tokens.mul(REFERRAL_BONUS).div(100);
+      uint256 partnerTokens   = tokens.mul(partnerBonus).div(100);
+      uint256 referralTokens  = tokens.mul(referralBonus).div(100);
       uint256 totalBuyerTokens = tokens.add(referralTokens);
       assert(hlt.send(foundationAddress, buyer, totalBuyerTokens));
       assert(hlt.send(foundationAddress, partner, partnerTokens));
@@ -72,6 +72,14 @@ contract Crowdsale is Ownable {
     uint256 oldFoundationTokens = hlt.getBalance(foundationAddress);
     assert(hlt.send(foundationAddress, newFoundationAddress, oldFoundationTokens));
     foundationAddress = newFoundationAddress;
+  }
+
+  function setReferralBonus(unit256 _referralBonus ) onlyOwner {
+     referralBonus = _referralBonus;
+  }
+
+  function setPartnerBonus(unit256  _partnerBonus) onlyOwner {
+     partnerBonus = _partnerBonus;
   }
 
 }
