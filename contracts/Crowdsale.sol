@@ -1,11 +1,5 @@
 pragma solidity ^0.4.11;
 
-/* TODO
-- how do we now when crowdsale os finished?
-- do we really need to store founderAddress?
-*/
-
-
 import './HealthToken.sol';
 import './zeppelin/math/SafeMath.sol';
 import './zeppelin/ownership/Ownable.sol';
@@ -21,8 +15,7 @@ contract Crowdsale is Ownable {
 
 
   address public foundationAddress;
-  address public founderAddress;
-  uint256 public price; //how many HLT we will send for 1 ETH;
+  uint256 public price; //how many HLT we will send for 1 ETH; To finish crowdsale set price to 0
 
   HealthToken public hlt;
 
@@ -43,9 +36,8 @@ contract Crowdsale is Ownable {
 
   function Crowdsale(address _foundationAddress, address _founderAddress){
     foundationAddress = _foundationAddress;
-    founderAddress = _founderAddress;
     hlt = new HealthToken();
-    hlt.init(foundationAddress, FOUNDATION_SUPPLY, founderAddress, FOUNDER_SUPPLY);
+    hlt.init(foundationAddress, FOUNDATION_SUPPLY, _founderAddress, FOUNDER_SUPPLY);
   }
 
   function setPrice(uint256 _price) public onlyOwner {
