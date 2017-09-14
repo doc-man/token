@@ -60,6 +60,7 @@ jQuery(document).ready(function($) {
                 waitForContractCreation(error, contract, 
                     $('input[name=publishedTx]','#publishContractForm'),
                     $('input[name=publishedCrowdsaleAddress]','#publishContractForm'),
+                    $('input[name=publishedCrowdsaleAddress]','#publishPartnerContractForm'),
                     function(contract){
                         contract.hlt(function(error, result){
                             if(!error){
@@ -123,7 +124,26 @@ jQuery(document).ready(function($) {
         if(!tokenContract) {printError('Load contracts first!'); return;}
 
         let crowdsaleAddress = $('input[name=CrowdsaleAddress]', '#publishPartnerContractForm').val();
-        let founderAddress = $('input[name=founderAddress]', '#publishContractForm').val();
+        let partnerAddress = $('input[name=founderAddress]', '#publishContractForm').val();
+
+
+        let contractObj = web3.eth.contract(partnerContract.abi);
+        console.log('Creating contract '+partnerContract.contract_name+' with parameters:\n', 
+            crowdsaleAddress, partnerAddress,
+            'ABI', JSON.stringify(crowdsaleContract.abi));
+        let contractInstance = contractObj.new(
+            crowdsaleAddress, partnerAddress,
+            {
+                from: web3.eth.accounts[0], 
+                data: partnerContract.unlinked_binary,
+            },
+            function(error, contract){
+                waitForContractCreation(error, contract, 
+                    $('input[name=publishedTx]','#publishPartnerContractForm'),
+                    $('input[name=publishedCrowdsaleAddress]','#publishPartnerContractForm'),
+                );
+            }
+        );
 
     });
 
