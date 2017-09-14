@@ -3,9 +3,11 @@ jQuery(document).ready(function($) {
     $(window).on("load", isWeb3Available);
     initCrowdsaleForm();
     const tokenContractUrl       = './build/contracts/HealthToken.json';
-    const crowdsaleContractUrl   = './build/contracts/CrowdSale.json';
+    const crowdsaleContractUrl   = './build/contracts/Crowdsale.json';
+    const partnerContractUrl     = './build/contracts/PartnerCrowdsale.json';
     let tokenContract;
     let crowdsaleContract;
+    let partnerContract;
 
 
     function initCrowdsaleForm(){
@@ -23,6 +25,10 @@ jQuery(document).ready(function($) {
         $.ajax(crowdsaleContractUrl,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(function( data ) {
             crowdsaleContract = data;
             $('#crowdsaleABI').text(JSON.stringify(crowdsaleContract.abi));
+        });
+        $.ajax(partnerContractUrl,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(function( data ) {
+            partnerContract = data;
+            $('#partnerContractABI').text(JSON.stringify(partnerContract.abi));
         });
 
     });
@@ -109,6 +115,16 @@ jQuery(document).ready(function($) {
                 console.error(error)
             }
         });
+    });
+
+    $('#publishPartnerContract', '#publishPartnerContractForm').click(function(){
+        printError(null);
+        if(!isWeb3Connected()) return;
+        if(!tokenContract) {printError('Load contracts first!'); return;}
+
+        let crowdsaleAddress = $('input[name=CrowdsaleAddress]', '#publishPartnerContractForm').val();
+        let founderAddress = $('input[name=founderAddress]', '#publishContractForm').val();
+
     });
 
     //====================================================

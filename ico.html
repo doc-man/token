@@ -36,10 +36,24 @@
 
 <h2>2. Set price </h2>
 <form id="crowdsaleContractForm">
-    <label for="crowdsaleAddreoadInfo">Crowdsale at: <input type="text" name="crowdsaleAddress" value="" class="ethAddress"></label>
+    <label for="crowdsaleAddress">Crowdsale at: <input type="text" name="crowdsaleAddress" value="" class="ethAddress"></label>
     <input type="button" id="loadInfo" value="Load info">
     <label>Price (HLT per ETH): <input type="number" name="price" value="" class="time"></label>
     <input type="button" id="setPrice" value="Set Price">
+</form>
+
+
+
+<h2>1. Publish Referral Contract</h2>
+<form id="publishReferralContractForm">
+    <label for="crowdsaleAddress">Crowdsale at: <input type="text" name="crowdsaleAddress" value="" class="ethAddress"></label>
+    <label for="partnerAddress">Partner address: <input type="text" name="partnerAddress" value="" class="ethAddress"></label>
+
+
+    <input type="button" id="publishReferralContract" value="Publish">
+    <label for="publishedTx">Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label>
+    <label for="publishedCrowdsaleAddress">Crowdsale Published at: <input type="text" name="publishedCrowdsaleAddress" value="" class="ethAddress"></label>
+    <label for="publishedTokenAddress">Token Published at: <input type="text" name="publishedTokenAddress" value="" class="ethAddress"></label>
 </form>
 
 </body>

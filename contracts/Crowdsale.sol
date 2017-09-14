@@ -10,7 +10,7 @@ import './HealthToken.sol';
 import './SafeMath.sol';
 import './Ownable.sol';
 
-contract CrowdSale is Ownable {
+contract Crowdsale is Ownable {
   using SafeMath for uint256;
 
   uint256 public constant TOTAL_SUPPLY = 1200000000 ether;
@@ -41,7 +41,7 @@ contract CrowdSale is Ownable {
     _;
   }
 
-  function CrowdSale(address _foundationAddress, address _founderAddress){
+  function Crowdsale(address _foundationAddress, address _founderAddress){
     foundationAddress = _foundationAddress;
     founderAddress = _founderAddress;
     hlt = new HealthToken();

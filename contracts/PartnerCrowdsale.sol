@@ -1,12 +1,12 @@
 pragma solidity ^0.4.11;
 
-import './CrowdSale.sol';
+import './Crowdsale.sol';
 
-contract ReferralCrowdSale {
-  CrowdSale public sale;
+contract PartnerCrowdsale {
+  Crowdsale public sale;
   address public partner;
 
-  function ReferralCrowdSale(CrowdSale _sale, address _partner){
+  function PartnerCrowdsale(Crowdsale _sale, address _partner){
     sale = _sale;
     partner = _partner;
   }
