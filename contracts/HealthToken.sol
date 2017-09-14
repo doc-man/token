@@ -1,8 +1,8 @@
 pragma solidity ^0.4.11;
 
 
-import './StandardToken.sol';
-import './Ownable.sol';
+import './zeppelin/token/StandardToken.sol';
+import './zeppelin/ownership/Ownable.sol';
 
 
 contract HealthToken is StandardToken, Ownable {
