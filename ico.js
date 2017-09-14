@@ -65,7 +65,6 @@ jQuery(document).ready(function($) {
                 waitForContractCreation(error, contract, 
                     $('input[name=publishedTx]','#publishContractForm'),
                     $('input[name=publishedCrowdsaleAddress]','#publishContractForm'),
-                    $('input[name=publishedCrowdsaleAddress]','#publishPartnerContractForm'),
                     function(contract){
                         contract.hlt(function(error, result){
                             if(!error){
@@ -75,6 +74,8 @@ jQuery(document).ready(function($) {
                             }
                         });
                         $('input[name=crowdsaleAddress]', '#crowdsaleContractForm').val(contract.address);   
+                        $('input[name=crowdsaleAddress]','#publishPartnerContractForm').val(contract.address);   
+                        $('input[name=crowdsaleAddress]','#publishPersonalContractForm').val(contract.address);   
                     }
                 );
             }
@@ -146,6 +147,8 @@ jQuery(document).ready(function($) {
                 waitForContractCreation(error, contract, 
                     $('input[name=publishedTx]','#publishPartnerContractForm'),
                     $('input[name=publishedCrowdsaleAddress]','#publishPartnerContractForm'),
+                    function(contract){
+                    }
                 );
             }
         );
@@ -183,7 +186,7 @@ jQuery(document).ready(function($) {
                     $('input[name=publishedTx]','#publishPersonalContractForm'),
                     $('input[name=publishedCrowdsaleAddress]','#publishPersonalContractForm'),
                     function(contract){
-                        $('input[name=crowdsaleAddress]','#claimFromPersonalContractForm')
+                        $('input[name=crowdsaleAddress]','#claimFromPersonalContractForm').val(contract.address); 
                     }
                 );
             }
@@ -200,23 +203,23 @@ jQuery(document).ready(function($) {
         let accessKey = $('input[name=accessKey]', '#claimFromPersonalContractForm').val();
 
         let contractObj = web3.eth.contract(personalContract.abi);
+        let contractInstance = contractObj.at(crowdsaleAddress);
+
         console.log('Calling '+personalContract.contract_name+'.claim() with parameters:\n', 
-            crowdsaleAddress, toAddress, accessKey,
+            toAddress, accessKey,
             'ABI', JSON.stringify(personalContract.abi));
-        let contractInstance = contractObj.claim(
-            crowdsaleAddress, toAddress, accessKey,
+        contractInstance.claim(
+            toAddress, accessKey,
             {
                 from: web3.eth.accounts[0], 
                 data: personalContract.unlinked_binary,
             },
-            function(error, contract){
-                waitForContractCreation(error, contract, 
-                    $('input[name=publishedTx]','#publishPersonalContractForm'),
-                    $('input[name=publishedCrowdsaleAddress]','#publishPersonalContractForm'),
-                    function(contract){
-                        $('input[name=crowdsaleAddress]','#claimFromPersonalContractForm')
-                    }
-                );
+            function(error, result){
+                if(!error){
+                    console.log("Claim tx: ",result);    
+                }else{
+                    console.error(error)
+                }
             }
         );
 
