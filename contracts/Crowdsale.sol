@@ -7,7 +7,7 @@ import './zeppelin/ownership/Ownable.sol';
 contract Crowdsale is Ownable {
   using SafeMath for uint256;
 
-  uint256 public constant TOTAL_SUPPLY = 1200000000 ether;
+  uint256 public constant TOTAL_SUPPLY = 1200000000 ether;          //amount of tokens (not ETH), ether = * 10^18
   uint256 public constant FOUNDATION_SUPPLY = TOTAL_SUPPLY*80/100;
   uint256 public constant FOUNDER_SUPPLY = TOTAL_SUPPLY*20/100;
   uint256 public partnerBonus = 2; //percent of referral partner bonus
@@ -20,19 +20,13 @@ contract Crowdsale is Ownable {
   HealthToken public hlt;
 
   /**
-   * event for token purchase logging
-   * @param purchaser who paid for the tokens
-   * @param beneficiary who got the tokens
-   * @param value weis paid for purchase
-   * @param amount amount of tokens purchased
+   * Event for token purchase logging
+   * @param purchaser Who paid for the tokens
+   * @param beneficiary Who got the tokens
+   * @param value Weis paid for purchase
+   * @param amount Amount of tokens purchased
    */ 
   event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
-
-  modifier canSell(){
-    //assert(price > 0);
-    if(price == 0) return;  //if crowdsale not started or paused it's better not to eat all transaction gas,  as with assert()
-    _;
-  }
 
   function Crowdsale(address _foundationAddress, address _founderAddress){
     foundationAddress = _foundationAddress;
@@ -49,6 +43,7 @@ contract Crowdsale is Ownable {
   }
 
   function saleTo(address buyer, address partner) public payable canSell {
+    require(price > 0);
     uint256 tokens  = msg.value.mul(price);
     if(partner == 0x0){
       hlt.send(foundationAddress, buyer, tokens);
@@ -66,6 +61,9 @@ contract Crowdsale is Ownable {
 
   function tokensAvailable() public constant returns(uint256){
     return hlt.getBalance(foundationAddress); 
+  }
+  function hasEnoughTokens(uint256 tokensRequired) internal constant return(bool){
+    return hlt.getBalance(foundationAddress) >= tokensRequired;
   }
 
   function setFoundation(address newFoundationAddress) onlyOwner {
