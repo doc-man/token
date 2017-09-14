@@ -12,7 +12,7 @@
 <div class="error" id="errormsg"></div>
 
 <h2>0. Load contracts</h2>
-<form id="loadContractsForm">
+<form id="loadContractsForm" class="contractForm">
     <label>HealthToken Token ABI:
         <textarea id="tokenABI" class="abi" readonly></textarea>
     </label>
@@ -23,7 +23,7 @@
 </form>
 
 <h2>1. Publish Contracts</h2>
-<form id="publishContractForm">
+<form id="publishContractForm"  class="contractForm">
     <label>foundationAddress: <input type="text" name="foundationAddress" value="" class="ethAddress"></label>
     <label>founderAddress: <input type="text" name="founderAddress" value="" class="ethAddress"></label>
 
@@ -35,7 +35,7 @@
 </form>
 
 <h2>2. Set price </h2>
-<form id="crowdsaleContractForm">
+<form id="crowdsaleContractForm"  class="contractForm">
     <label for="crowdsaleAddress">Crowdsale at: <input type="text" name="crowdsaleAddress" value="" class="ethAddress"></label>
     <input type="button" id="loadInfo" value="Load info">
     <label>Price (HLT per ETH): <input type="number" name="price" value="" class="time"></label>
@@ -45,7 +45,7 @@
 
 
 <h2>1. Publish Partner Contract</h2>
-<form id="publishPartnerContractForm">
+<form id="publishPartnerContractForm"  class="contractForm">
     <label for="crowdsaleAddress">Crowdsale at: <input type="text" name="crowdsaleAddress" value="" class="ethAddress"></label>
     <label for="partnerAddress">Partner address: <input type="text" name="partnerAddress" value="" class="ethAddress"></label>
 
