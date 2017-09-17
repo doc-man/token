@@ -359,8 +359,8 @@ contract PartnerCrowdsale {
 contract PersonalCrowdsale {
   Crowdsale public sale;
   address public partner;
+  bool public claimed = false;
   bytes32 accessKeyHash;
-  bool claimed = false;
 
   function PersonalCrowdsale(Crowdsale _sale, address _partner, bytes32 _accessKeyHash){
     sale = _sale;
