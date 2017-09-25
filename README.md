@@ -1,13 +1,11 @@
-1. Have a variable called rate that can be used to change the conversion rate. During the different sale periods.
+1. There is a variable called rate that can be used to change the conversion rate. During the different sale periods.
 
-2. Send money from coinbase or any other exchange wallet.
+2. Send money from coinbase or any other exchange wallet and later claim the tokens.
 
 3. Give bonus to advisiors.
                
-
-TODO:
-1. Allow buy from ex.
-2. When a user upload their medical records then give them some HLT.
+Todo:
+1. When a user upload their prescriptions then give them some HLT.
 
 QUESTIONS:
 1. What if there is no more tokens available on Foundation address and price is not zero?
