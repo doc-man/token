@@ -46,14 +46,14 @@ contract Crowdsale is Ownable {
     require(price > 0);
     uint256 tokens  = msg.value.mul(price);
     if(partner == 0x0){
-      hlt.send(foundationAddress, buyer, tokens);
+      hlt.sendFromFoundation(buyer, tokens);
       TokenPurchase(msg.sender, buyer, msg.value, tokens);
     }else{
       uint256 partnerTokens   = tokens.mul(partnerBonus).div(100);
       uint256 referralTokens  = tokens.mul(referralBonus).div(100);
       uint256 totalBuyerTokens = tokens.add(referralTokens);
-      assert(hlt.send(foundationAddress, buyer, totalBuyerTokens));
-      assert(hlt.send(foundationAddress, partner, partnerTokens));
+      assert(hlt.sendFromFoundation(buyer, totalBuyerTokens));
+      assert(hlt.sendFromFoundation(partner, partnerTokens));
       TokenPurchase(msg.sender, buyer, msg.value, totalBuyerTokens);
     }
     foundationAddress.transfer(msg.value);
@@ -64,8 +64,7 @@ contract Crowdsale is Ownable {
   }
 
   function setFoundation(address newFoundationAddress) onlyOwner {
-    uint256 oldFoundationTokens = hlt.balanceOf(foundationAddress);
-    assert(hlt.send(foundationAddress, newFoundationAddress, oldFoundationTokens));
+    hlt.setFoundation(newFoundationAddress);
     foundationAddress = newFoundationAddress;
   }
 
