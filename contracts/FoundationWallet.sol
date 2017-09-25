@@ -50,8 +50,8 @@ contract FoundationWallet is Ownable {
      *
      * First time setup
      */
-    function FoundationWallet(ERC20Basic token, uint minimumSharesToPassAVote, uint minutesForDebate) payable {
-        changeVotingRules(token, minimumSharesToPassAVote, minutesForDebate);
+    function FoundationWallet(address _token, uint minimumSharesToPassAVote, uint minutesForDebate) payable {
+        changeVotingRules(_token, minimumSharesToPassAVote, minutesForDebate);
     }
 
     /**
@@ -60,12 +60,12 @@ contract FoundationWallet is Ownable {
      * Make so that proposals need tobe discussed for at least `minutesForDebate/60` hours
      * and all voters combined must own more than `minimumSharesToPassAVote` shares of token `sharesAddress` to be executed
      *
-     * @param sharesAddress token address
+     * @param _token token address
      * @param minimumSharesToPassAVote proposal can vote only if the sum of shares held by all voters exceed this number
      * @param minutesForDebate the minimum amount of delay between when a proposal is made and when it can be executed
      */
-    function changeVotingRules(ERC20Basic sharesAddress, uint minimumSharesToPassAVote, uint minutesForDebate) onlyOwner {
-        token = ERC20Basic(sharesAddress);
+    function changeVotingRules(address _token, uint minimumSharesToPassAVote, uint minutesForDebate) onlyOwner {
+        token = ERC20Basic(_token);
         if (minimumSharesToPassAVote == 0 ) minimumSharesToPassAVote = 1;
         minimumQuorum = minimumSharesToPassAVote;
         debatingPeriodInMinutes = minutesForDebate;
