@@ -6,7 +6,7 @@ import './zeppelin/token/ERC20Basic.sol';
 /**
  * The shareholder association contract itself
  */
-contract Association is Ownable {
+contract FoundationWallet is Ownable {
 
     uint public minimumQuorum;
     uint public debatingPeriodInMinutes;
@@ -50,8 +50,8 @@ contract Association is Ownable {
      *
      * First time setup
      */
-    function Association(ERC20Basic sharesAddress, uint minimumSharesToPassAVote, uint minutesForDebate) payable {
-        changeVotingRules(sharesAddress, minimumSharesToPassAVote, minutesForDebate);
+    function FoundationWallet(ERC20Basic token, uint minimumSharesToPassAVote, uint minutesForDebate) payable {
+        changeVotingRules(token, minimumSharesToPassAVote, minutesForDebate);
     }
 
     /**
