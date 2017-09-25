@@ -27,14 +27,14 @@ contract PersonalCrowdsale {
     }else{
         claimed = true;
         HealthToken hlt = sale.hlt();
-        uint256 amount = hlt.getBalance(this);
+        uint256 amount = hlt.balanceOf(this);
         assert(hlt.transfer(to, amount));
         return true;
     }
   }
   function balance() public constant returns(uint256){
         HealthToken hlt = sale.hlt();
-        uint256 _balance = hlt.getBalance(this);
+        uint256 _balance = hlt.balanceOf(this);
         return _balance;
   }
 }

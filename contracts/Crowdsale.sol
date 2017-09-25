@@ -60,11 +60,11 @@ contract Crowdsale is Ownable {
   }
 
   function tokensAvailable() public constant returns(uint256){
-    return hlt.getBalance(foundationAddress); 
+    return hlt.balanceOf(foundationAddress); 
   }
 
   function setFoundation(address newFoundationAddress) onlyOwner {
-    uint256 oldFoundationTokens = hlt.getBalance(foundationAddress);
+    uint256 oldFoundationTokens = hlt.balanceOf(foundationAddress);
     assert(hlt.send(foundationAddress, newFoundationAddress, oldFoundationTokens));
     foundationAddress = newFoundationAddress;
   }

@@ -1,11 +1,11 @@
 pragma solidity ^0.4.11;
 
 
-import './zeppelin/token/StandardToken.sol';
+import './zeppelin/token/PausableToken.sol';
 import './zeppelin/ownership/Ownable.sol';
 
 
-contract HealthToken is StandardToken, Ownable {
+contract HealthToken is PausableToken { //PausableToken is Ownable
 
   string public constant name = "HealthToken";
   string public constant symbol = "HLT";
@@ -32,8 +32,5 @@ contract HealthToken is StandardToken, Ownable {
     Transfer(from, to, amount);
     return true;
   }
-  
-  function getBalance(address who) public constant returns(uint256){
-    return balances[who];
-  }
+ 
 }
