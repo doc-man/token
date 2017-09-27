@@ -1,8 +1,9 @@
 pragma solidity ^0.4.11;
 
-import './HealthToken.sol';
 import './zeppelin/math/SafeMath.sol';
 import './zeppelin/ownership/Ownable.sol';
+import './HealthToken.sol';
+import './FoundationWallet.sol';
 
 contract Crowdsale is Ownable {
   using SafeMath for uint256;
@@ -28,8 +29,8 @@ contract Crowdsale is Ownable {
    */ 
   event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
 
-  function Crowdsale(address _foundationAddress, address _founderAddress){
-    foundationAddress = _foundationAddress;
+  function Crowdsale(address _founderAddress){
+    foundationAddress = new FoundationWallet(hlt);
     hlt = new HealthToken();
     hlt.init(foundationAddress, FOUNDATION_SUPPLY, _founderAddress, FOUNDER_SUPPLY);
   }
