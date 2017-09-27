@@ -2,12 +2,15 @@ pragma solidity ^0.4.11;
 
 import './zeppelin/token/ERC20Basic.sol';
 import './SimpleVoting.sol';
+import './HealthToken.sol';
 
 contract FoundationWallet {
-    uint256 public constant minimumSharesToPassAVote = 120000000; 
-    uint256 public constant secondsForDebate = 30 days;
+    uint256 public constant TOTAL_SUPPLY = 1200000000 ether;          //amount of tokens (not ETH), ether = * 10^18
+    uint256 public constant FOUNDATION_SUPPLY = TOTAL_SUPPLY*80/100;
+    uint256 public constant FOUNDER_SUPPLY = TOTAL_SUPPLY*20/100;
 
-    ERC20Basic public token;
+
+    HealthToken public token;
     address public votingContract;
 
     modifier onlyVotingContract(){
@@ -15,8 +18,11 @@ contract FoundationWallet {
         _;
     }
 
-    function FoundationWallet(ERC20Basic _token){
-        token = _token;
+    function FoundationWallet(address _founderAddress){
+        token = new HealthToken();
+        token.init(this, FOUNDATION_SUPPLY, _founderAddress, FOUNDER_SUPPLY);
+        uint256 minimumSharesToPassAVote = TOTAL_SUPPLY/10; 
+        uint256 secondsForDebate = 30 days;
         votingContract = new SimpleVoting(this, minimumSharesToPassAVote, secondsForDebate);
     }
 

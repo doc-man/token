@@ -4,6 +4,10 @@ import './zeppelin/ownership/Ownable.sol';
 import './zeppelin/token/ERC20Basic.sol';
 import './FoundationWallet.sol';
 
+contract TerminatableProposal {
+    function terminate() public;
+}
+
 /**
  * The shareholder association contract itself
  */
@@ -21,7 +25,7 @@ contract SimpleVoting is Ownable {
     event ProposalTallied(uint proposalID, uint result, uint quorum, bool active);
     event ChangeOfRules(uint newMinimumQuorum, uint newDebatingPeriodInSeconds, address newSharesTokenAddress);
 
-    enum Type{Ether, Token, VotingAddress}
+    enum Type{Ether, Token, VotingAddress, Terminate}
 
     struct Proposal {
         Type typeOfProposal;
@@ -127,6 +131,10 @@ contract SimpleVoting is Ownable {
         return newProposal(Type.VotingAddress, newVotingContractAddress, 0, proposalDescription);
     }
 
+    function newTerminateProposal(address proposalAddress, string proposalDescription) onlyShareholders returns (uint) {
+        return newProposal(Type.Terminate, proposalAddress, 0, proposalDescription);
+    }
+
     /**
      * Log a vote for a proposal
      *
@@ -205,6 +213,8 @@ contract SimpleVoting is Ownable {
             assert(foundationWallet.transferTokens(p.recipient, p.amount));
         } else if(p.typeOfProposal == Type.VotingAddress) {
             assert(foundationWallet.setVotingContract(p.recipient));
+        } else if(p.typeOfProposal == Type.Terminate) {
+            TerminatableProposal(p.recipient).terminate();
         } else {
             revert();
         }
