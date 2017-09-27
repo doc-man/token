@@ -36,7 +36,7 @@ contract HealthToken is PausableToken { //PausableToken is Ownable
     /**
     * @dev Changes the address of Foundations. Also sends all tokens to a new address
     */
-    function setFoundation(address to){
+    function setFoundation(address to) onlyOwner {
         sendFromFoundation(to, balances[foundation]);
         foundation = to;  
     }
