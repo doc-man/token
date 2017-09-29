@@ -3,7 +3,6 @@ pragma solidity ^0.4.11;
 import './zeppelin/math/SafeMath.sol';
 import './zeppelin/ownership/Ownable.sol';
 import './HealthToken.sol';
-import './FoundationWallet.sol';
 
 contract Crowdsale is Ownable {
   using SafeMath for uint256;

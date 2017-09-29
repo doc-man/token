@@ -4,7 +4,7 @@ import './zeppelin/token/ERC20Basic.sol';
 import './SimpleVoting.sol';
 import './HealthToken.sol';
 
-contract FoundationWallet {
+contract FoundationContract is Ownable {
     uint256 public constant TOTAL_SUPPLY = 1200000000 ether;          //amount of tokens (not ETH), ether = * 10^18
     uint256 public constant FOUNDATION_SUPPLY = TOTAL_SUPPLY*80/100;
     uint256 public constant FOUNDER_SUPPLY = TOTAL_SUPPLY*20/100;
@@ -18,17 +18,19 @@ contract FoundationWallet {
         _;
     }
 
-    function FoundationWallet(address _founderAddress){
+    function FoundationContract(address _founderAddress) {
         token = new HealthToken();
         token.init(this, FOUNDATION_SUPPLY, _founderAddress, FOUNDER_SUPPLY);
-        uint256 minimumSharesToPassAVote = TOTAL_SUPPLY/10; 
-        uint256 secondsForDebate = 30 days;
-        votingContract = new SimpleVoting(this, minimumSharesToPassAVote, secondsForDebate);
     }
 
     function() payable {
     }
 
+    function initVotingContract(address newVotingContract) onlyOwner public {
+        if(votingContract == 0x0){
+            votingContract = newVotingContract;
+        }
+    }
     function setVotingContract(address newVotingContract) onlyVotingContract public returns(bool){
         votingContract = newVotingContract;
         return true;

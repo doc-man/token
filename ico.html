@@ -17,6 +17,12 @@
     <label>HealthToken Token ABI:
         <textarea id="tokenABI" class="abi" readonly></textarea>
     </label>
+    <label>FoundationContract ABI:
+        <textarea id="foundationABI" class="abi" readonly></textarea>
+    </label>
+    <label>SimpleVoting ABI:
+        <textarea id="votingABI" class="abi" readonly></textarea>
+    </label>
     <label>HealthToken Crowdsale ABI:
         <textarea id="crowdsaleABI"  class="abi" readonly></textarea>
     </label>
@@ -29,19 +35,73 @@
     <input type="button" id="loadContractsBtn" value="Load contracts">
 </form>
 
-<h2>1. Publish Contracts</h2>
-<form id="publishContractForm"  class="contractForm">
-    <label>foundationAddress: <input type="text" name="foundationAddress" value="" class="ethAddress"></label>
+<h2>1.1 Publish Foundation Contract</h2>
+<form id="publishFoundationForm"  class="contractForm">
     <label>founderAddress: <input type="text" name="founderAddress" value="" class="ethAddress"></label>
 
-
-    <input type="button" id="publishContract" value="Publish">
-    <label for="publishedTx">Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label>
-    <label for="publishedCrowdsaleAddress">Crowdsale Published at: <input type="text" name="publishedCrowdsaleAddress" value="" class="ethAddress"></label>
-    <label for="publishedTokenAddress">Token Published at: <input type="text" name="publishedTokenAddress" value="" class="ethAddress"></label>
+    <input type="button" id="publishFoundationContract" value="Publish">
+    <label>Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label>
+    <label>Foundation Published at: <input type="text" name="publishedFoundationAddress" value="" class="ethAddress"></label>
+    <label>Token Published at: <input type="text" name="publishedTokenAddress" value="" class="ethAddress"></label>
 </form>
 
-<h2>2. Set price </h2>
+<h2>1.2 Publish SimpleVoting Contract</h2>
+<form id="publishVotingForm"  class="contractForm">
+    <label>foundationAddress: <input type="text" name="foundationAddress" value="" class="ethAddress"></label>
+
+    <input type="button" id="publishVotingContract" value="Publish">
+    <label>Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label>
+    <label>SimpleVoting Published at: <input type="text" name="publishedVotingAddress" value="" class="ethAddress"></label>
+</form>
+
+<h2>1.3 Initialize Foundation with SimpleVoting</h2>
+<form id="initializeFoundationForm"  class="contractForm">
+    <label>foundationAddress: <input type="text" name="foundationAddress" value="" class="ethAddress"></label>
+    <label>votingAddress: <input type="text" name="votingAddress" value="" class="ethAddress"></label>
+
+    <input type="button" id="initFoundation" value="Publish">
+    <label>Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label>
+</form>
+
+<h2>1.4 Publish Crowdsale Contract</h2>
+<form id="publishCrowdsaleForm"  class="contractForm">
+    <label>foundationAddress: <input type="text" name="foundationAddress" value="" class="ethAddress"></label>
+    <label>tokenAddress: <input type="text" name="tokenAddress" value="" class="ethAddress"></label>
+
+    <input type="button" id="publishCrowdsaleContract" value="Publish">
+    <label>Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label>
+    <label>Crowdsale Published at: <input type="text" name="publishedCrowdsaleAddress" value="" class="ethAddress"></label>
+</form>
+
+<h2>2. Submit Token Proposal to Foundation </h2>
+<form id="submitTokenProposalForm"  class="contractForm">
+    <label>votingAddress: <input type="text" name="votingAddress" value="" class="ethAddress"></label>
+    <label>beneficiary: <input type="text" name="beneficiary" value="" class="ethAddress"></label>
+    <label>amount: <input type="text" name="amount" value="" class="ethAddress"></label>
+    <label>description: <input type="text" name="description" value="" class="ethAddress"></label>
+    <input type="button" id="submitTokenProposal" value="Submit Proposal">
+    <label>Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label>
+</form>
+
+<h2>3. Vote for Proposal</h2>
+<form id="voteForProposalForm"  class="contractForm">
+    <label>votingAddress: <input type="text" name="votingAddress" value="" class="ethAddress"></label>
+    <label>proposalNumber: <input type="text" name="description" value="" class="ethAddress"></label>
+    <div>Vote: <label><input type="radio" name="vote" value="for">For propasal</label><label><input type="radio" name="vote" value="aginst">Against propasal</label></div>
+    <input type="button" id="submitVote" value="Submit Vote">
+    <label>Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label>
+</form>
+
+<h2>4. Count Votes</h2>
+<form id="countVotesForm"  class="contractForm">
+    <label>votingAddress: <input type="text" name="votingAddress" value="" class="ethAddress"></label>
+    <label>proposalNumber: <input type="text" name="description" value="" class="ethAddress"></label>
+    <input type="button" id="countVotes" value="Count Votes">
+    <label>Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label>
+</form>
+
+
+<h2>4. Set price </h2>
 <form id="crowdsaleContractForm"  class="contractForm">
     <label for="crowdsaleAddress">Crowdsale at: <input type="text" name="crowdsaleAddress" value="" class="ethAddress"></label>
     <input type="button" id="loadInfo" value="Load info">
@@ -51,7 +111,7 @@
 
 
 
-<h2>3. Publish Partner Contract</h2>
+<h2>5.1 Publish Partner Contract</h2>
 <form id="publishPartnerContractForm"  class="contractForm">
     <label for="crowdsaleAddress">Crowdsale at: <input type="text" name="crowdsaleAddress" value="" class="ethAddress"></label>
     <label for="partnerAddress">Partner address: <input type="text" name="partnerAddress" value="" class="ethAddress"></label>
@@ -62,7 +122,7 @@
     <label for="publishedCrowdsaleAddress">Partner crowdsale published at: <input type="text" name="publishedCrowdsaleAddress" value="" class="ethAddress"></label>
 </form>
 
-<h2>4. Publish Personal Contract</h2>
+<h2>5.2 Publish Personal Contract</h2>
 <form id="publishPersonalContractForm"  class="contractForm">
     <label for="crowdsaleAddress">Crowdsale at: <input type="text" name="crowdsaleAddress" value="" class="ethAddress"></label>
     <label for="partnerAddress">Partner address: <input type="text" name="partnerAddress" value="0" class="ethAddress"></label>
@@ -75,7 +135,7 @@
     <label for="publishedCrowdsaleAddress">Personal crowdsale published at: <input type="text" name="publishedCrowdsaleAddress" value="" class="ethAddress"></label>
 </form>
 
-<h2>5. Claim tokens from Personal Contract</h2>
+<h2>5.3 Claim tokens from Personal Contract</h2>
 <form id="claimFromPersonalContractForm"  class="contractForm">
     <label for="crowdsaleAddress">Personal crowdsale at: <input type="text" name="crowdsaleAddress" value="" class="ethAddress"></label>
     <label for="toAddress">Claim to address: <input type="text" name="toAddress" value="" class="ethAddress"></label>

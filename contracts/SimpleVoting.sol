@@ -2,7 +2,7 @@ pragma solidity ^0.4.11;
 
 import './zeppelin/ownership/Ownable.sol';
 import './zeppelin/token/ERC20Basic.sol';
-import './FoundationWallet.sol';
+import './FoundationContract.sol';
 
 contract TerminatableProposal {
     function terminate() public;
@@ -17,7 +17,7 @@ contract SimpleVoting is Ownable {
     uint public debatingPeriodInSeconds;
     Proposal[] public proposals;
     uint public numProposals;
-    FoundationWallet public foundationWallet;
+    FoundationContract public foundationContract;
     ERC20Basic public token;
 
     event ProposalAdded(uint proposalID, address recipient, uint amount, string description);
@@ -56,9 +56,12 @@ contract SimpleVoting is Ownable {
      *
      * First time setup
      */
-    function SimpleVoting(FoundationWallet _foundationWallet, uint minimumSharesToPassAVote, uint secondsForDebate) payable {
-        foundationWallet = _foundationWallet;
-        token = ERC20Basic(foundationWallet.getTokenAddress());
+    function SimpleVoting(FoundationContract _foundationContract) {
+        foundationContract = _foundationContract;
+        token = ERC20Basic(foundationContract.getTokenAddress());
+        uint256 totalSuppy = foundationContract.TOTAL_SUPPLY();
+        uint256 minimumSharesToPassAVote = totalSuppy/10; 
+        uint256 secondsForDebate = 30 days;
         changeVotingRules(minimumSharesToPassAVote, secondsForDebate);
     }
 
@@ -147,6 +150,9 @@ contract SimpleVoting is Ownable {
         Proposal storage p = proposals[proposalNumber];
         require(p.voted[msg.sender] != true);
 
+        require(now > p.votingDeadline                                             // If it is past the voting deadline
+            && !p.executed);                                                       // and it has not already been executed
+
         uint voteID = p.votes.length++;
         p.votes[voteID] = Vote({inSupport: supportsProposal, voter: msg.sender});
         p.voted[msg.sender] = true;
@@ -208,11 +214,11 @@ contract SimpleVoting is Ownable {
         p.executed = true;
 
         if(p.typeOfProposal == Type.Ether) {
-            assert(foundationWallet.transferEther(p.recipient, p.amount));
+            assert(foundationContract.transferEther(p.recipient, p.amount));
         } else if(p.typeOfProposal == Type.Token) {
-            assert(foundationWallet.transferTokens(p.recipient, p.amount));
+            assert(foundationContract.transferTokens(p.recipient, p.amount));
         } else if(p.typeOfProposal == Type.VotingAddress) {
-            assert(foundationWallet.setVotingContract(p.recipient));
+            assert(foundationContract.setVotingContract(p.recipient));
         } else if(p.typeOfProposal == Type.Terminate) {
             TerminatableProposal(p.recipient).terminate();
         } else {
