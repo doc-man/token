@@ -13,10 +13,6 @@ jQuery(document).ready(function($) {
     let tokenContract;
     let foundationContract;
     let votingContract;
-    let crowdsaleContract;
-    let partnerContract;
-    let personalContract;
-
 
     function initCrowdsaleForm(){
         setTimeout(function(){
@@ -37,18 +33,6 @@ jQuery(document).ready(function($) {
         $.ajax(votingContractUrl,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(function( data ) {
             votingContract = data;
             $('#votingABI').text(JSON.stringify(votingContract.abi));
-        });
-        $.ajax(crowdsaleContractUrl,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(function( data ) {
-            crowdsaleContract = data;
-            $('#crowdsaleABI').text(JSON.stringify(crowdsaleContract.abi));
-        });
-        $.ajax(partnerContractUrl,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(function( data ) {
-            partnerContract = data;
-            $('#partnerContractABI').text(JSON.stringify(partnerContract.abi));
-        });
-        $.ajax(personalContractUrl,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(function( data ) {
-            personalContract = data;
-            $('#personalContractABI').text(JSON.stringify(personalContract.abi));
         });
     });
 
@@ -89,31 +73,7 @@ jQuery(document).ready(function($) {
             }
         );
     });
-    $('#publishVotingContract').click(function(){
-        printError(null);
-        if(!isWeb3Connected()) return;
-        if(!votingContract) {printError('Load contracts first!'); return;}
 
-        let foundationAddress = $('input[name=foundationAddress]', '#publishVotingForm').val();
-
-        let contractObj = web3.eth.contract(votingContract.abi);
-        console.log('Creating contract '+votingContract.contract_name+' with parameters:\n', 
-            foundationAddress,
-            'ABI', JSON.stringify(votingContract.abi));
-        let contractInstance = contractObj.new(
-            foundationAddress,
-            {
-                from: web3.eth.accounts[0], 
-                data: votingContract.unlinked_binary,
-            },
-            function(error, contract){
-                waitForContractCreation(error, contract, 
-                    $('input[name=publishedTx]','#publishVotingForm'),
-                    $('input[name=publishedVotingAddress]','#publishVotingForm'),
-                );
-            }
-        );
-    });
     $('#initFoundation').click(function(){
         printError(null);
         if(!isWeb3Connected()) return;
@@ -140,32 +100,6 @@ jQuery(document).ready(function($) {
             }
         );
 
-    });
-    $('#publishCrowdsaleContract').click(function(){
-        printError(null);
-        if(!isWeb3Connected()) return;
-        if(!crowdsaleContract) {printError('Load contracts first!'); return;}
-
-        let foundationAddress = $('input[name=foundationAddress]', '#publishCrowdsaleForm').val();
-        let tokenAddress = $('input[name=tokenAddress]', '#publishCrowdsaleForm').val();
-
-        let contractObj = web3.eth.contract(crowdsaleContract.abi);
-        console.log('Creating contract '+crowdsaleContract.contract_name+' with parameters:\n', 
-             tokenAddress, foundationAddress, 
-            'ABI', JSON.stringify(crowdsaleContract.abi));
-        let contractInstance = contractObj.new(
-             tokenAddress, foundationAddress, 
-            {
-                from: web3.eth.accounts[0], 
-                data: crowdsaleContract.unlinked_binary,
-            },
-            function(error, contract){
-                waitForContractCreation(error, contract, 
-                    $('input[name=publishedTx]','#publishCrowdsaleForm'),
-                    $('input[name=publishedCrowdsaleAddress]','#publishCrowdsaleForm'),
-                );
-            }
-        );
     });
 
     $('#submitTokenProposal').click(function(){
@@ -271,149 +205,6 @@ jQuery(document).ready(function($) {
                 }
             }
         );
-    });
-
-
-
-
-
-
-
-    $('#loadInfo', '#crowdsaleContractForm').click(function(){
-        printError(null);
-        if(!isWeb3Connected()) return;
-        if(!tokenContract) {printError('Load contracts first!'); return;}
-
-        let publishedAddress = $('input[name=crowdsaleAddress]', '#crowdsaleContractForm').val();
-
-        let contractObj = web3.eth.contract(crowdsaleContract.abi);
-        let contractInstance = contractObj.at(publishedAddress);
-
-        contractInstance.price(function(error, result){
-            parseContractPropertyResponce(error, result, function(){
-                var price = result.toFixed();
-                $('input[name=price]', '#crowdsaleContractForm').val(price);
-            });
-        });
-    });
-
-    $('#setPrice', '#crowdsaleContractForm').click(function(){
-        printError(null);
-        if(!isWeb3Connected()) return;
-        if(!tokenContract) {printError('Load contracts first!'); return;}
-
-        let publishedAddress = $('input[name=crowdsaleAddress]', '#crowdsaleContractForm').val();
-
-        let contractObj = web3.eth.contract(crowdsaleContract.abi);
-        let contractInstance = contractObj.at(publishedAddress);
-
-        let price = Math.round($('input[name=price]', '#crowdsaleContractForm').val());
-
-        console.log('Set price on'+crowdsaleContract.contract_name+' with parameters:\n', price);
-        contractInstance.setPrice(price, function(error, result){
-            if(!error){
-                console.log("ICO setPrice tx: ",result);    
-            }else{
-                console.error(error)
-            }
-        });
-    });
-
-    $('#publishPartnerContract', '#publishPartnerContractForm').click(function(){
-        printError(null);
-        if(!isWeb3Connected()) return;
-        if(!tokenContract) {printError('Load contracts first!'); return;}
-
-        let crowdsaleAddress = $('input[name=crowdsaleAddress]', '#publishPartnerContractForm').val();
-        let partnerAddress = $('input[name=partnerAddress]', '#publishPartnerContractForm').val();
-
-
-        let contractObj = web3.eth.contract(partnerContract.abi);
-        console.log('Creating contract '+partnerContract.contract_name+' with parameters:\n', 
-            crowdsaleAddress, partnerAddress,
-            'ABI', JSON.stringify(partnerContract.abi));
-        let contractInstance = contractObj.new(
-            crowdsaleAddress, partnerAddress,
-            {
-                from: web3.eth.accounts[0], 
-                data: partnerContract.unlinked_binary,
-            },
-            function(error, contract){
-                waitForContractCreation(error, contract, 
-                    $('input[name=publishedTx]','#publishPartnerContractForm'),
-                    $('input[name=publishedCrowdsaleAddress]','#publishPartnerContractForm'),
-                    function(contract){
-                    }
-                );
-            }
-        );
-
-    });
-
-    $('#generateAccessKeyHash','#publishPersonalContractForm').click(function(){
-        printError(null);
-        if(!isWeb3Connected()) return;
-        let key = $('input[name=accessKey]', '#publishPersonalContractForm').val();
-        let hash = web3.sha3(key);
-        $('input[name=accessKeyHash]', '#publishPersonalContractForm').val(hash);
-    });
-    $('#publishPersonalContract', '#publishPersonalContractForm').click(function(){
-        printError(null);
-        if(!isWeb3Connected()) return;
-        if(!tokenContract) {printError('Load contracts first!'); return;}
-
-        let crowdsaleAddress = $('input[name=crowdsaleAddress]', '#publishPersonalContractForm').val();
-        let partnerAddress = $('input[name=partnerAddress]', '#publishPersonalContractForm').val();
-        let accessKeyHash = $('input[name=accessKeyHash]', '#publishPersonalContractForm').val();
-
-        let contractObj = web3.eth.contract(personalContract.abi);
-        console.log('Creating contract '+personalContract.contract_name+' with parameters:\n', 
-            crowdsaleAddress, partnerAddress, accessKeyHash,
-            'ABI', JSON.stringify(personalContract.abi));
-        let contractInstance = contractObj.new(
-            crowdsaleAddress, partnerAddress, accessKeyHash,
-            {
-                from: web3.eth.accounts[0], 
-                data: personalContract.unlinked_binary,
-            },
-            function(error, contract){
-                waitForContractCreation(error, contract, 
-                    $('input[name=publishedTx]','#publishPersonalContractForm'),
-                    $('input[name=publishedCrowdsaleAddress]','#publishPersonalContractForm'),
-                    function(contract){
-                        $('input[name=crowdsaleAddress]','#claimFromPersonalContractForm').val(contract.address); 
-                    }
-                );
-            }
-        );
-
-    });
-    $('#claimFromPersonalContract', '#claimFromPersonalContractForm').click(function(){
-        printError(null);
-        if(!isWeb3Connected()) return;
-        if(!tokenContract) {printError('Load contracts first!'); return;}
-
-        let crowdsaleAddress = $('input[name=crowdsaleAddress]', '#claimFromPersonalContractForm').val();
-        let toAddress = $('input[name=toAddress]', '#claimFromPersonalContractForm').val();
-        let accessKey = $('input[name=accessKey]', '#claimFromPersonalContractForm').val();
-
-        let contractObj = web3.eth.contract(personalContract.abi);
-        let contractInstance = contractObj.at(crowdsaleAddress);
-
-        console.log('Calling '+personalContract.contract_name+'.claim() with parameters:\n', 
-            toAddress, accessKey,
-            'ABI', JSON.stringify(personalContract.abi));
-        contractInstance.claim(
-            toAddress, accessKey,
-            function(error, result){
-                if(!error){
-                    console.log("Claim tx: ",result);    
-                }else{
-                    console.error(error)
-                }
-            }
-        );
-
     });
 
     //====================================================
