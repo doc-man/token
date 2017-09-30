@@ -2,6 +2,8 @@ var $ = jQuery;
 jQuery(document).ready(function($) {
 
     let web3;
+    let foundation  = "0x4b52e2a3e093c10e7a4e7a30b1509050ea5273c1";    
+    let voting = "0x2f0c07672ccddc9453af3fbacda5100d6e77ce50";
 
     function init(){
         web3 = loadWeb3();
@@ -40,15 +42,27 @@ jQuery(document).ready(function($) {
         loadContract(tokenContractUrl, function(data){
             tokenContract = data;
         });
+
         loadContract(foundationContractUrl, function(data){
             foundationContract = data;
             let contractObj = web3.eth.contract(foundationContract.abi); //The json interface for the contract to instantiate
 
-            pContractInstance = contractObj.at("0x4b52e2a3e093c10e7a4e7a30b1509050ea5273c1");
-            console.log("hello");
+            $('input[name=foundation]','#dashboardForm').val(foundation);
+
+            pContractInstance = contractObj.at(foundation);
+
+            pContractInstance.token(function(error, result){
+                if(!error){
+                    $('input[name=token]','#dashboardForm').val(result);
+                }else{
+                    console.log('Can\'t find token address', error);
+                }
+            });
+
             pContractInstance.getTokenBalance(function(error, result){
                 if(!error){
-                    $('input[name=numberOfHLT]','#dashboardForm').val(result);
+                    let amount = web3.fromWei(result, 'ether');
+                    $('input[name=numberOfHLT]','#dashboardForm').val(amount);
                 }else{
                     console.log('Can\'t find numbner of HLT', error);
                 }
@@ -73,11 +87,12 @@ jQuery(document).ready(function($) {
             votingContract = data;
             let contractObj = web3.eth.contract(votingContract.abi); //The json interface for the contract to instantiate
             
-            pContractInstance = contractObj.at("0x2f0c07672ccddc9453af3fbacda5100d6e77ce50");
-            console.log("hello");
+            pContractInstance = contractObj.at(voting);
+
             pContractInstance.minimumQuorum(function(error, result){
                 if(!error){
-                    $('input[name=minimumQuorum]','#dashboardForm').val(result);
+                    let amount = web3.fromWei(result, 'ether');
+                    $('input[name=minimumQuorum]','#dashboardForm').val(amount);
                 }else{
                     console.log('Can\'t find minimum quorum', error);
                 }
@@ -102,40 +117,6 @@ jQuery(document).ready(function($) {
         });
 
     });
-
-    function isWeb3Available(){
-        if (typeof Web3 == 'undefined') {
-            printError('web3.js unavailable. Please, install <a href="https://metamask.io">MetaMask</a>.');
-            return false;
-        }
-        if (typeof web3 !== 'undefined') {
-            // Use Mist/MetaMask's provider
-            window.web3 = new Web3(web3.currentProvider);
-        } else {
-            //console.log('No web3? You should consider trying MetaMask!')
-            // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-            window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-        }
-        return true;
-    }
-    function isWeb3Connected(){
-        if(!isWeb3Available()){
-            return false;
-        }
-        if(!web3.isConnected()) {
-            printError('web3.js is available, but not connected.');
-            return false;
-        }
-        if(!web3.eth.accounts[0]) {
-            printError('Eth account unavailable. Please unlock MetaMask.');
-            return false;
-        }
-        // if(web3.version.network != 3) {
-        //     printError('We are not in Ropsten network!');
-        //     return false;
-        // }
-        return true;
-    }
 
     function timeStringToTimestamp(str){
         return Math.round(Date.parse(str)/1000);
