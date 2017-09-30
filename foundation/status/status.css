@@ -1,1 +1,10 @@
 body{padding:20px}.error{color:red}input.ethAddress,input.ethTx,input.string{width:30em}.abi{display:block;width:100%;height:3em}.contractForm label{display:block}
+
+input[type=text] {
+    width: 50%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: none;
+    font-size:20px;
+    
+}

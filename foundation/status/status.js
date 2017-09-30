@@ -43,16 +43,64 @@ jQuery(document).ready(function($) {
         loadContract(foundationContractUrl, function(data){
             foundationContract = data;
             let contractObj = web3.eth.contract(foundationContract.abi); //The json interface for the contract to instantiate
+
+            pContractInstance = contractObj.at("0x4b52e2a3e093c10e7a4e7a30b1509050ea5273c1");
+            console.log("hello");
+            pContractInstance.getTokenBalance(function(error, result){
+                if(!error){
+                    $('input[name=numberOfHLT]','#dashboardForm').val(result);
+                }else{
+                    console.log('Can\'t find numbner of HLT', error);
+                }
+            });
+            pContractInstance.getEtherBalance(function(error, result){
+                if(!error){
+                    $('input[name=numberOfEther]','#dashboardForm').val(result);
+                }else{
+                    console.log('Can\'t find number of ether', error);
+                }
+            });
+            pContractInstance.votingContract(function(error, result){
+                if(!error){
+                    $('input[name=votingContract]','#dashboardForm').val(result);
+                }else{
+                    console.log('Can\'t find voting contract address', error);
+                }
+            });
+    
         });
         loadContract(votingContractUrl, function(data){
             votingContract = data;
+            let contractObj = web3.eth.contract(votingContract.abi); //The json interface for the contract to instantiate
+            
+            pContractInstance = contractObj.at("0x2f0c07672ccddc9453af3fbacda5100d6e77ce50");
+            console.log("hello");
+            pContractInstance.minimumQuorum(function(error, result){
+                if(!error){
+                    $('input[name=minimumQuorum]','#dashboardForm').val(result);
+                }else{
+                    console.log('Can\'t find minimum quorum', error);
+                }
+            });
+
+            pContractInstance.debatingPeriodInSeconds(function(error, result){
+                if(!error){
+                    $('input[name=debatingPeriodInSeconds]','#dashboardForm').val(result);
+                }else{
+                    console.log('Can\'t find debating Period In Seconds', error);
+                }
+            });
+            
+            pContractInstance.numProposals(function(error, result){
+                if(!error){
+                    $('input[name=numProposals]','#dashboardForm').val(result);
+                }else{
+                    console.log('Can\'t find numProposals', error);
+                }
+            });
+            
         });
 
-        let contractObj = web3.eth.contract(foundationContract.abi); //The json interface for the contract to instantiate
-
-        pContractInstance = contractObj.at("0x4b52e2a3e093c10e7a4e7a30b1509050ea5273c1");
-        console.log("hello");
-        console.log(pContractInstance);
     });
 
     function isWeb3Available(){
