@@ -2,17 +2,11 @@ var $ = jQuery;
 jQuery(document).ready(function($) {
     $(window).on("load", isWeb3Available);
     initCrowdsaleForm();
-    const tokenContractUrl       = '../build/contracts/HealthToken.json';
-    const foundationContractUrl  = '../build/contracts/FoundationContract.json';
-    const votingContractUrl      = '../build/contracts/SimpleVoting.json';
-    const crowdsaleContractUrl   = '../build/contracts/Crowdsale.json';
-    const partnerContractUrl     = '../build/contracts/PartnerCrowdsale.json';
-    const personalContractUrl     = '../build/contracts/PersonalCrowdsale.json';
+    const crowdsaleContractUrl   = '../../build/contracts/Crowdsale.json';
+    const partnerContractUrl     = '../../build/contracts/PartnerCrowdsale.json';
+    const personalContractUrl     = '../../build/contracts/PersonalCrowdsale.json';
 
 
-    let tokenContract;
-    let foundationContract;
-    let votingContract;
     let crowdsaleContract;
     let partnerContract;
     let personalContract;
@@ -26,18 +20,6 @@ jQuery(document).ready(function($) {
 
 
     $('#loadContractsBtn').click(function(){
-        $.ajax(tokenContractUrl,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(function( data ) {
-            tokenContract = data;
-            $('#tokenABI').text(JSON.stringify(tokenContract.abi));
-        });
-        $.ajax(foundationContractUrl,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(function( data ) {
-            foundationContract = data;
-            $('#foundationABI').text(JSON.stringify(foundationContract.abi));
-        });
-        $.ajax(votingContractUrl,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(function( data ) {
-            votingContract = data;
-            $('#votingABI').text(JSON.stringify(votingContract.abi));
-        });
         $.ajax(crowdsaleContractUrl,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(function( data ) {
             crowdsaleContract = data;
             $('#crowdsaleABI').text(JSON.stringify(crowdsaleContract.abi));
@@ -54,93 +36,6 @@ jQuery(document).ready(function($) {
 
 
 
-    $('#publishFoundationContract').click(function(){
-        printError(null);
-        if(!isWeb3Connected()) return;
-        if(!foundationContract) {printError('Load contracts first!'); return;}
-
-        let founderAddress = $('input[name=founderAddress]', '#publishFoundationForm').val();
-
-        let contractObj = web3.eth.contract(foundationContract.abi);
-        console.log('Creating contract '+foundationContract.contract_name+' with parameters:\n', 
-            founderAddress,
-            'ABI', JSON.stringify(foundationContract.abi));
-        let contractInstance = contractObj.new(
-            founderAddress,
-            {
-                from: web3.eth.accounts[0], 
-                data: foundationContract.unlinked_binary,
-            },
-            function(error, contract){
-                waitForContractCreation(error, contract, 
-                    $('input[name=publishedTx]','#publishFoundationForm'),
-                    $('input[name=publishedFoundationAddress]','#publishFoundationForm'),
-                    function(contract){
-                        contract.token(function(error, result){
-                            if(!error){
-                                $('input[name=publishedTokenAddress]','#publishFoundationForm').val(result);
-                            }else{
-                                console.log('Can\'t find token address', error);
-                            }
-                        });
-                        $('input[name=foundationAddress]', '#publishVotingForm').val(contract.address);   
-                    }
-                );
-            }
-        );
-    });
-    $('#publishVotingContract').click(function(){
-        printError(null);
-        if(!isWeb3Connected()) return;
-        if(!votingContract) {printError('Load contracts first!'); return;}
-
-        let foundationAddress = $('input[name=foundationAddress]', '#publishVotingForm').val();
-
-        let contractObj = web3.eth.contract(votingContract.abi);
-        console.log('Creating contract '+votingContract.contract_name+' with parameters:\n', 
-            foundationAddress,
-            'ABI', JSON.stringify(votingContract.abi));
-        let contractInstance = contractObj.new(
-            foundationAddress,
-            {
-                from: web3.eth.accounts[0], 
-                data: votingContract.unlinked_binary,
-            },
-            function(error, contract){
-                waitForContractCreation(error, contract, 
-                    $('input[name=publishedTx]','#publishVotingForm'),
-                    $('input[name=publishedVotingAddress]','#publishVotingForm'),
-                );
-            }
-        );
-    });
-    $('#initFoundation').click(function(){
-        printError(null);
-        if(!isWeb3Connected()) return;
-        if(!foundationContract) {printError('Load contracts first!'); return;}
-
-        let foundationAddress = $('input[name=foundationAddress]', '#initializeFoundationForm').val();
-        let votingAddress = $('input[name=votingAddress]', '#initializeFoundationForm').val();
-
-        let contractObj = web3.eth.contract(foundationContract.abi);
-        let contractInstance = contractObj.at(foundationAddress);
-
-        console.log('Calling '+foundationContract.contract_name+'.initVotingContract() with parameters:\n', 
-            votingAddress,
-            'ABI', JSON.stringify(foundationContract.abi));
-        contractInstance.initVotingContract(
-            votingAddress,
-            function(error, result){
-                if(!error){
-                    console.log("Init tx: ",result);
-                    $('input[name=publishedTx]','#initializeFoundationForm').val(result);
-                }else{
-                    console.error(error)
-                }
-            }
-        );
-
-    });
     $('#publishCrowdsaleContract').click(function(){
         printError(null);
         if(!isWeb3Connected()) return;
@@ -167,116 +62,6 @@ jQuery(document).ready(function($) {
             }
         );
     });
-
-    $('#submitTokenProposal').click(function(){
-        printError(null);
-        if(!isWeb3Connected()) return;
-        if(!votingContract) {printError('Load contracts first!'); return;}
-
-        var form = $('#submitTokenProposalForm');
-        let votingAddress = $('input[name=votingAddress]', form).val();
-        let beneficiary = $('input[name=beneficiary]', form).val();
-        let amount      = web3.toWei($('input[name=amount]', form).val(), 'ether');
-        let description = $('input[name=description]', form).val();
-
-        let contractObj = web3.eth.contract(votingContract.abi);
-        let contractInstance = contractObj.at(votingAddress);
-
-        console.log('Calling '+votingContract.contract_name+'.newTokenProposal() with parameters:\n', 
-            beneficiary, amount, description,
-            'ABI', JSON.stringify(votingContract.abi));
-        contractInstance.newTokenProposal(
-            beneficiary, amount, description,
-            function(error, result){
-                if(!error){
-                    console.log("Proposal tx: ",result);
-                    $('input[name=publishedTx]',form).val(result);
-                }else{
-                    console.error(error)
-                }
-            }
-        );
-
-    });
-
-
-    $('#submitVote').click(function(){
-        printError(null);
-        if(!isWeb3Connected()) return;
-        if(!votingContract) {printError('Load contracts first!'); return;}
-
-        var form = $('#voteForProposalForm');
-        let votingAddress = $('input[name=votingAddress]', form).val();
-        let proposalNumber      = web3.toWei($('input[name=amount]', form).val(), 'ether');
-        let voteRadio = $('input[name=vote]:checked');
-        if(voteRadio.length != 1){
-            alert('No vote selected!');
-            return;
-        }
-        let vote;
-        switch(voteRadio.val()){
-            case 'for':
-                vote = true;
-                break;
-            case 'against':
-                vote = false;
-                break;
-            default:
-                alert('Unknown vote!');
-                return;
-        }
-
-        let contractObj = web3.eth.contract(votingContract.abi);
-        let contractInstance = contractObj.at(votingAddress);
-
-        console.log('Calling '+votingContract.contract_name+'.vote() with parameters:\n', 
-            proposalNumber, vote,
-            'ABI', JSON.stringify(votingContract.abi));
-        contractInstance.vote(
-            proposalNumber, vote,
-            function(error, result){
-                if(!error){
-                    console.log("Vote tx: ",result);
-                    $('input[name=publishedTx]',form).val(result);
-                }else{
-                    console.error(error)
-                }
-            }
-        );
-
-    });
-    $('#countVotes').click(function(){
-        printError(null);
-        if(!isWeb3Connected()) return;
-        if(!votingContract) {printError('Load contracts first!'); return;}
-
-        var form = $('#countVotesForm');
-        let votingAddress = $('input[name=votingAddress]', form).val();
-        let proposalNumber      = web3.toWei($('input[name=amount]', form).val(), 'ether');
-
-        let contractObj = web3.eth.contract(votingContract.abi);
-        let contractInstance = contractObj.at(votingAddress);
-
-        console.log('Calling '+votingContract.contract_name+'.executeVoting() with parameters:\n', 
-            proposalNumber,
-            'ABI', JSON.stringify(votingContract.abi));
-        contractInstance.executeVoting(
-            proposalNumber,
-            function(error, result){
-                if(!error){
-                    console.log("Execute voting tx: ",result);
-                    $('input[name=publishedTx]',form).val(result);
-                }else{
-                    console.error(error)
-                }
-            }
-        );
-    });
-
-
-
-
-
 
 
     $('#loadInfo', '#crowdsaleContractForm').click(function(){
