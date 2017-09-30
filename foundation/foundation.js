@@ -2,12 +2,12 @@ var $ = jQuery;
 jQuery(document).ready(function($) {
     $(window).on("load", isWeb3Available);
     initCrowdsaleForm();
-    const tokenContractUrl       = './build/contracts/HealthToken.json';
-    const foundationContractUrl  = './build/contracts/FoundationContract.json';
-    const votingContractUrl      = './build/contracts/SimpleVoting.json';
-    const crowdsaleContractUrl   = './build/contracts/Crowdsale.json';
-    const partnerContractUrl     = './build/contracts/PartnerCrowdsale.json';
-    const personalContractUrl     = './build/contracts/PersonalCrowdsale.json';
+    const tokenContractUrl       = '../build/contracts/HealthToken.json';
+    const foundationContractUrl  = '../build/contracts/FoundationContract.json';
+    const votingContractUrl      = '../build/contracts/SimpleVoting.json';
+    const crowdsaleContractUrl   = '../build/contracts/Crowdsale.json';
+    const partnerContractUrl     = '../build/contracts/PartnerCrowdsale.json';
+    const personalContractUrl     = '../build/contracts/PersonalCrowdsale.json';
 
 
     let tokenContract;
