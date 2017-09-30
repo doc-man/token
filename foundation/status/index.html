@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>HCF Status</title>
+    <title>HCF Dashboard</title>
     <meta charset="UTF-8">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link rel='stylesheet' href='./status.css' type='text/css'/>
@@ -9,21 +9,28 @@
     <script type="text/javascript" src="status.js"></script>
 </head>
 <body>
-<h1>HCF Status</h1>
+<h1>HCF Dashboard</h1>
 <div class="error" id="errormsg"></div>
 
 <form id="dashboardForm">
-    <table>
-        <tr><td>1. Foundation address:</td><td><input type="text" readonly name="foundation" value="" size=100></td></tr>        
-	    <tr><td>2. Token address:</td><td><input type="text" readonly name="token" value="" size=100></td></tr>
+    <table border=0>
+        <tr><td>1. Foundation address:</td><td><a href=https://rinkeby.etherscan.io/address/>
+                        <input type="text" readonly name="foundation" value="" size=100></a></td></tr>        
+        <tr><td>2. Token address:</td><td><a href=https://rinkeby.etherscan.io/address/>
+            <input type="text" readonly name="token" value="" size=100></a></td></tr>
         <tr><td>3. Total number of HLT tokens with foundation:</td><td><input type="text" readonly name="numberOfHLT" value="" size=100></td></tr>
         <tr><td>4. Total number of ether: </td><td><input type="text" readonly name="numberOfEther" value=""></td></tr>
-        <tr><td>5. Address of voting contract: </td><td><input type="text" readonly name="votingContract" value=""></td></tr>
+        <tr><td>5. Address of voting contract: </td><td><a href=https://rinkeby.etherscan.io/address/>
+            <input type="text" readonly name="votingContract" value=""></a>
+        </td></tr>
         <tr><td>6. Minimum Quorum: </td><td><input type="text" readonly name="minimumQuorum" value=""></td></tr>
         <tr><td>7. Debating period in seconds: </td><td><input type="text" readonly name="debatingPeriodInSeconds" value=""></td></tr>
         <tr><td>8. Number of proposals to the foundation:</td><td><input type="text" readonly name="numProposals" value=""></td></tr>
-        <tr><td>9. HLT have been sent to following contracts:  </td><td> </td></tr>
     </table>
+    <table border=0>
+        <tr><th>Proposal number</th><th>Proposal description</th><th>Number of votes</th><th>Recepient address</th><th>Deadline</th></tr>
+    </table>
+
 </form>
 
 </body>

@@ -114,6 +114,15 @@ jQuery(document).ready(function($) {
                 }
             });
             
+
+            pContractInstance.proposals(0)(function(error, result){
+                if(!error){
+                    console.log(result);
+                }else{
+                    console.log('Can\'t find proposals', error);
+                }
+            });
+
         });
 
     });
