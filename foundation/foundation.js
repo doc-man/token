@@ -64,6 +64,7 @@ jQuery(document).ready(function($) {
                         pContractInstance.token(function(error, result){
                             if(!error){
                                 $('input[name=publishedTokenAddress]','#publishFoundationForm').val(result);
+                                $('input[name=foundationAddress]','#initializeFoundationForm').val(receipt.contractAddress);
                             }else{
                                 console.log('Can\'t find token address', error);
                             }
@@ -73,6 +74,7 @@ jQuery(document).ready(function($) {
             }
         );
     });
+
 
     $('#initFoundation').click(function(){
         printError(null);
