@@ -33,7 +33,17 @@ jQuery(document).ready(function($) {
         let foundationContract;
         let votingContract;
 
-
+        $.ajax(tokenContractUrl,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(function( data ) {
+            tokenContract = data;
+        });
+        
+        $.ajax(foundationContractUrl,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(function( data ) {
+            foundationContract = data;
+        });
+        
+        $.ajax(votingContractUrl,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(function( data ) {
+            votingContract = data;
+        });
 
         let contractObj = web3.eth.contract(foundationContract.abi); //The json interface for the contract to instantiate
 
