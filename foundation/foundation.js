@@ -5,10 +5,6 @@ jQuery(document).ready(function($) {
     const tokenContractUrl       = '../build/contracts/HealthToken.json';
     const foundationContractUrl  = '../build/contracts/FoundationContract.json';
     const votingContractUrl      = '../build/contracts/SimpleVoting.json';
-    const crowdsaleContractUrl   = '../build/contracts/Crowdsale.json';
-    const partnerContractUrl     = '../build/contracts/PartnerCrowdsale.json';
-    const personalContractUrl     = '../build/contracts/PersonalCrowdsale.json';
-
 
     let tokenContract;
     let foundationContract;
@@ -45,15 +41,18 @@ jQuery(document).ready(function($) {
 
         let founderAddress = $('input[name=founderAddress]', '#publishFoundationForm').val();
 
-        let contractObj = web3.eth.contract(foundationContract.abi);
-        console.log('Creating contract '+foundationContract.contract_name+' with parameters:\n', 
+        // ref: https://web3js.readthedocs.io/en/1.0/web3-eth-contract.html
+        let contractObj = web3.eth.contract(foundationContract.abi); //The json interface for the contract to instantiate
+
+        console.log('Creating contract '+foundationContract.contract_name+' with founder address:\n', 
             founderAddress,
             'ABI', JSON.stringify(foundationContract.abi));
+
         let contractInstance = contractObj.new(
             founderAddress,
             {
-                from: web3.eth.accounts[0], 
-                data: foundationContract.unlinked_binary,
+                from: web3.eth.accounts[0],  // The address transactions should be made from.
+                data: foundationContract.unlinked_binary, // The byte code of the contract. Used when the contract gets deployed.
             },
             function(error, contract){
                 waitForContractCreation(error, contract, 
@@ -219,16 +218,16 @@ jQuery(document).ready(function($) {
         if (typeof contract.transactionHash !== 'undefined') {
             console.log('Transaction published! transactionHash: ' + contract.transactionHash);
             if(txField) txField.val(contract.transactionHash);
-            // let timer = setInterval(function(){
-            //     web3.eth.getTransactionReceipt(contract.transactionHash, function(error, receipt){
-            //         if(receipt != null){
-            //             clearInterval(timer);
-            //             console.log('Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);
-            //             if(contractField) contractField.val(contract.address);
-            //             if(typeof publishedCallback === 'function') publishedCallback(contract);
-            //         }
-            //     });
-            // });
+            let timer = setInterval(function(){
+                web3.eth.getTransactionReceipt(contract.transactionHash, function(error, receipt){
+                    if(receipt != null){
+                        clearInterval(timer);
+                        console.log('Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);
+                        if(contractField) contractField.val(contract.address);
+                        if(typeof publishedCallback === 'function') publishedCallback(contract);
+                    }
+                });
+            });
         }else{
             console.error('Unknown error. Contract: ', contract);
         }             
