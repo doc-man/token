@@ -58,15 +58,16 @@ jQuery(document).ready(function($) {
                 waitForContractCreation(error, contract, 
                     $('input[name=publishedTx]','#publishFoundationForm'),
                     $('input[name=publishedFoundationAddress]','#publishFoundationForm'),
-                    function(contract){
-                        contract.token(function(error, result){
+                    function(receipt){
+                        pContractInstance = contractObj.at(receipt.contractAddress);
+                        console.log(pContractInstance);
+                        pContractInstance.token(function(error, result){
                             if(!error){
                                 $('input[name=publishedTokenAddress]','#publishFoundationForm').val(result);
                             }else{
                                 console.log('Can\'t find token address', error);
                             }
                         });
-                        $('input[name=foundationAddress]', '#publishVotingForm').val(contract.address);   
                     }
                 );
             }
@@ -222,9 +223,10 @@ jQuery(document).ready(function($) {
                 web3.eth.getTransactionReceipt(contract.transactionHash, function(error, receipt){
                     if(receipt != null){
                         clearInterval(timer);
-                        console.log('Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);
-                        if(contractField) contractField.val(contract.address);
-                        if(typeof publishedCallback === 'function') publishedCallback(contract);
+                        console.log(receipt);
+                        console.log('Contract mined! address: ' + receipt.contractAddress + ' transactionHash: ' + contract.transactionHash);
+                        if(contractField) contractField.val(receipt.contractAddress);
+                        if(typeof publishedCallback === 'function') publishedCallback(receipt);
                     }
                 });
             });
