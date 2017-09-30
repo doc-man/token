@@ -20,6 +20,9 @@ jQuery(document).ready(function($) {
         return web3;
     }
     
+    function loadContract(url, callback){
+        $.ajax(url,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(callback);
+    }
 
     $(window).on("load", function(){
 
@@ -33,15 +36,15 @@ jQuery(document).ready(function($) {
         let foundationContract;
         let votingContract;
 
-        $.ajax(tokenContractUrl,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(function( data ) {
+
+        loadContract(tokenContractUrl, function(data){
             tokenContract = data;
         });
-        
-        $.ajax(foundationContractUrl,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(function( data ) {
+        loadContract(foundationContractUrl, function(data){
             foundationContract = data;
+            let contractObj = web3.eth.contract(foundationContract.abi); //The json interface for the contract to instantiate
         });
-        
-        $.ajax(votingContractUrl,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(function( data ) {
+        loadContract(votingContractUrl, function(data){
             votingContract = data;
         });
 
