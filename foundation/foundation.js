@@ -221,16 +221,13 @@ jQuery(document).ready(function($) {
         if (typeof contract.transactionHash !== 'undefined') {
             console.log('Transaction published! transactionHash: ' + contract.transactionHash);
             if(txField) txField.val(contract.transactionHash);
-            let timer = setInterval(function(){
-                web3.eth.getTransactionReceipt(contract.transactionHash, function(error, receipt){
-                    if(receipt != null){
-                        clearInterval(timer);
-                        console.log(receipt);
-                        console.log('Contract mined! address: ' + receipt.contractAddress + ' transactionHash: ' + contract.transactionHash);
-                        if(contractField) contractField.val(receipt.contractAddress);
-                        if(typeof publishedCallback === 'function') publishedCallback(receipt);
-                    }
-                });
+            web3.eth.getTransactionReceipt(contract.transactionHash, function(error, receipt){
+                if(receipt != null){
+                    console.log(receipt);
+                    console.log('Contract mined! address: ' + receipt.contractAddress + ' transactionHash: ' + contract.transactionHash);
+                    if(contractField) contractField.val(receipt.contractAddress);
+                    if(typeof publishedCallback === 'function') publishedCallback(receipt);
+                }
             });
         }else{
             console.error('Unknown error. Contract: ', contract);
