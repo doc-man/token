@@ -3,33 +3,35 @@ jQuery(document).ready(function($) {
 
     let web3;
     let foundation  = "0x4b52e2a3e093c10e7a4e7a30b1509050ea5273c1";    
-    let voting = "0x2f0c07672ccddc9453af3fbacda5100d6e77ce50";
+    let votingContractAddress; // this value is retrieved from foundation
 
-    function init(){
-        web3 = loadWeb3();
-        if(web3 == null) return;
-        //console.log("web3: ",web3);
-    }
-
-    function loadWeb3(){
-        if(typeof window.web3 == "undefined"){
-            printError('No MetaMask found');
-            return null;
-        }
-        let Web3 = require('web3');
-        let web3 = new Web3();
-        web3.setProvider(window.web3.currentProvider);
-        return web3;
-    }
-    
     function loadContract(url, callback){
         $.ajax(url,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(callback);
     }
 
-    $(window).on("load", function(){
 
-        init();    
-        alert("hello");
+   // Ref: https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#partly_sunny-web3---ethereum-browser-environment-check     
+   window.addEventListener('load', function() {
+    
+        // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+        if (typeof window.web3 !== 'undefined') {
+            // Use Mist/MetaMask's provider
+            let Web3 = require('web3');
+            web3 = new Web3();
+            web3.setProvider(window.web3.currentProvider);
+        } else {
+            console.log('No web3? You should consider trying MetaMask!')
+            // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        }
+        
+        // Now you can start your app & access web3 freely:
+        startApp();
+    
+    });    
+
+    function startApp(){
+
         const tokenContractUrl       = '../../build/contracts/HealthToken.json';
         const foundationContractUrl  = '../../build/contracts/FoundationContract.json';
         const votingContractUrl      = '../../build/contracts/SimpleVoting.json';
@@ -86,8 +88,9 @@ jQuery(document).ready(function($) {
         loadContract(votingContractUrl, function(data){
             votingContract = data;
             let contractObj = web3.eth.contract(votingContract.abi); //The json interface for the contract to instantiate
-            
-            pContractInstance = contractObj.at(voting);
+
+            votingContractAddress = $('input[name=votingContract]','#dashboardForm').val();
+            pContractInstance = contractObj.at(votingContractAddress);
 
             pContractInstance.minimumQuorum(function(error, result){
                 if(!error){
@@ -106,16 +109,17 @@ jQuery(document).ready(function($) {
                 }
             });
             
-            pContractInstance.numProposals(function(error, result){
+            pContractInstance.getProposalsCount(function(error, result){
                 if(!error){
+                    console.log(result);
                     $('input[name=numProposals]','#dashboardForm').val(result);
                 }else{
                     console.log('Can\'t find numProposals', error);
                 }
             });
             
-
-            pContractInstance.proposals(0)(function(error, result){
+            let proposalNumber = 0;
+            pContractInstance.getProposal(proposalNumber,function(error, result){
                 if(!error){
                     console.log(result);
                 }else{
@@ -125,7 +129,7 @@ jQuery(document).ready(function($) {
 
         });
 
-    });
+    };
 
     function timeStringToTimestamp(str){
         return Math.round(Date.parse(str)/1000);

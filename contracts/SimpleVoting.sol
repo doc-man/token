@@ -16,7 +16,6 @@ contract SimpleVoting is Ownable {
     uint public minimumQuorum;
     uint public debatingPeriodInSeconds;
     Proposal[] public proposals;
-    uint public numProposals;
     FoundationContract public foundationContract;
     ERC20Basic public token;
 
@@ -100,7 +99,6 @@ contract SimpleVoting is Ownable {
         p.proposalPassed = false;
         p.numberOfVotes = 0;
         ProposalAdded(proposalID, beneficiary, weiAmount, proposalDescription);
-        numProposals = proposalID+1;
 
         return proposalID;
     }
@@ -226,4 +224,14 @@ contract SimpleVoting is Ownable {
         }
 
     }
+
+    // ref: https://ethereum.stackexchange.com/questions/3609/returning-a-struct-and-reading-via-web3
+    function getProposalsCount() public constant returns(uint) {
+        return proposals.length;
+    }
+
+    function getProposal(uint index) public constant returns(address, uint, string, uint) {
+        return (proposals[index].recipient, proposals[index].amount, proposals[index].description, proposals[index].votingDeadline);
+    }
+
 }
