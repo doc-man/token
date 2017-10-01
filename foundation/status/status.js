@@ -103,23 +103,33 @@ jQuery(document).ready(function($) {
                             }
                         });
                         
+                        let numberOfProposals = 0;
+                        let proposals = new Array();
                         pContractInstance.getProposalsCount(function(error, result){
                             if(!error){
-                                console.log(result);
                                 $('input[name=numProposals]','#dashboardForm').val(result);
+                                numberOfProposals = $('input[name=numProposals]','#dashboardForm').val();
+                                for (proposalNumber = 0; proposalNumber < numberOfProposals; proposalNumber++) { 
+                                    pContractInstance.getProposal(proposalNumber,function(error, result){
+                                        if(!error){
+                                            var proposal = {};
+                                            proposal["recipient"] = result[0];
+                                            proposal["amount"] = result[1].toString();
+                                            proposal["description"] = result[2];
+                                            proposal["votingDeadline"] = result[2];
+                                            proposals.push(proposal);                                           
+                                        }else{
+                                            console.log('Can\'t find proposals', error);
+                                        }
+                                        console.log(proposals);
+                                    });
+                                }
                             }else{
                                 console.log('Can\'t find numProposals', error);
                             }
                         });
                         
-                        let proposalNumber = 0;
-                        pContractInstance.getProposal(proposalNumber,function(error, result){
-                            if(!error){
-                                console.log(result);
-                            }else{
-                                console.log('Can\'t find proposals', error);
-                            }
-                        });
+ 
             
                     });
                 }else{
