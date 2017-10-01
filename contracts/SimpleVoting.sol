@@ -227,7 +227,7 @@ contract SimpleVoting is Ownable {
 
     // ref: https://ethereum.stackexchange.com/questions/3609/returning-a-struct-and-reading-via-web3
     function getProposalsCount() public constant returns(uint) {
-        return proposals.length+1;
+        return proposals.length; // when there is a single element at index 0 it will return 1
     }
 
     function getProposal(uint index) public constant returns(address, 

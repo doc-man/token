@@ -67,50 +67,52 @@ jQuery(document).ready(function($) {
         });   
 
         $('#submitVote').click(function(){
-            printError(null);
-            if(!isWeb3Connected()) return;
-            if(!votingContract) {printError('Load contracts first!'); return;}
+            loadContract(votingContractUrl, function(data){
+                votingContract = data;
 
-            var form = $('#voteForProposalForm');
-            let votingAddress = $('input[name=votingAddress]', form).val();
-            let proposalNumber      = web3.toWei($('input[name=amount]', form).val(), 'ether');
-            let voteRadio = $('input[name=vote]:checked');
-            if(voteRadio.length != 1){
-                alert('No vote selected!');
-                return;
-            }
-            let vote;
-            switch(voteRadio.val()){
-                case 'for':
-                    vote = true;
-                    break;
-                case 'against':
-                    vote = false;
-                    break;
-                default:
-                    alert('Unknown vote!');
+                var form = $('#voteForProposalForm');
+                let votingAddress = $('input[name=votingAddress]', form).val();
+                let proposalNumber      = web3.toWei($('input[name=amount]', form).val(), 'ether');
+                let voteRadio = $('input[name=vote]:checked');
+                if(voteRadio.length != 1){
+                    alert('No vote selected!');
                     return;
-            }
-
-            let contractObj = web3.eth.contract(votingContract.abi);
-            let contractInstance = contractObj.at(votingAddress);
-
-            console.log('Calling '+votingContract.contract_name+'.vote() with parameters:\n', 
-                proposalNumber, vote,
-                'ABI', JSON.stringify(votingContract.abi));
-            contractInstance.vote(
-                proposalNumber, vote,
-                function(error, result){
-                    if(!error){
-                        console.log("Vote tx: ",result);
-                        $('input[name=publishedTx]',form).val(result);
-                    }else{
-                        console.error(error)
-                    }
                 }
-            );
+                let vote;
+                switch(voteRadio.val()){
+                    case 'for':
+                        vote = true;
+                        break;
+                    case 'against':
+                        vote = false;
+                        break;
+                    default:
+                        alert('Unknown vote!');
+                        return;
+                }
 
-        });
+                let contractObj = web3.eth.contract(votingContract.abi);
+                let contractInstance = contractObj.at(votingAddress);
+
+                console.log('Calling '+votingContract.contract_name+'.vote() with parameters:\n', 
+                    proposalNumber, vote,
+                    'ABI', JSON.stringify(votingContract.abi));
+                contractInstance.vote(
+                    proposalNumber, vote,
+                    function(error, result){
+                        if(!error){
+                            console.log("Vote tx: ",result);
+                            $('input[name=publishedTx]',form).val(result);
+                        }else{
+                            console.error(error)
+                        }
+                    }
+                );
+            });
+        });   
+    
+
+
         $('#countVotes').click(function(){
             printError(null);
             if(!isWeb3Connected()) return;

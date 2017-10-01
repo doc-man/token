@@ -2,7 +2,7 @@ var $ = jQuery;
 jQuery(document).ready(function($) {
 
     let web3;
-    let foundation  = "0xdd40fc261b61061fba0acbd4c46c638c0bff7a92";    
+    let foundation  = "0x9b1721cbfb12f056772d9f30af7332e15d84e6f1";    
     let votingContractAddress; // this value is retrieved from foundation
 
     function loadContract(url, callback){
@@ -76,6 +76,7 @@ jQuery(document).ready(function($) {
                     console.log('Can\'t find number of ether', error);
                 }
             });
+
             pContractInstance.votingContract(function(error, result){
                 if(!error){
                     $('input[name=votingContract]','#dashboardForm').val(result);
@@ -102,14 +103,19 @@ jQuery(document).ready(function($) {
                                 console.log('Can\'t find debating Period In Seconds', error);
                             }
                         });
-                        
+
+                        let proposalsTable = "<table border=1><th>Recipient</th><th>Amount</th><th>Description</th><th>Voting Deadline</th><th># of votes</th><th>Executed</th><th>Proposal passed</th><th>Type of proposal</th>";                        
                         let numberOfProposals = 0;
                         let proposals = new Array();
                         pContractInstance.getProposalsCount(function(error, result){
                             if(!error){
                                 $('input[name=numProposals]','#dashboardForm').val(result);
                                 numberOfProposals = $('input[name=numProposals]','#dashboardForm').val();
-                                for (proposalNumber = 0; proposalNumber < numberOfProposals; proposalNumber++) { 
+                                // inside the for loop I am calling a async function. For loop will funish running immediately. While all your asynchronous operations are started. 
+                                // Ref: https://stackoverflow.com/questions/11488014/asynchronous-process-inside-a-javascript-for-loop
+                                
+                                for (let proposalNumber = 0; proposalNumber < numberOfProposals; proposalNumber++) { 
+                                    console.log(proposalNumber);
                                     pContractInstance.getProposal(proposalNumber,function(error, result){
                                         if(!error){
                                             var proposal = {};
@@ -121,13 +127,8 @@ jQuery(document).ready(function($) {
                                             proposal["executed"] = result[5];
                                             proposal["proposalPassed"] = result[6];
                                             proposal["typeOfProposal"] = result[7];
-                                            proposals.push(proposal);                                           
-                                        }else{
-                                            console.log('Can\'t find proposals', error);
-                                        }
-                                        // now printing the array of proposals on the screen
-                                        var proposalsTable = "<table border=1><th>Recipient</th><th>Amount</th><th>Description</th><th>Voting Deadline</th><th># of votes</th><th>Executed</th><th>Proposal passed</th><th>Type of proposal</th>";
-                                        for (proposalNumber = 0; proposalNumber < numberOfProposals; proposalNumber++) {    
+                                            proposals.push(proposal);       
+                                            console.log(proposals);
                                             proposalsTable+="<tr>";
                                             proposalsTable+="<td>"+proposals[proposalNumber].recipient+"</td>";
                                             let amount = web3.fromWei(proposals[proposalNumber].amount, 'ether');
@@ -145,28 +146,28 @@ jQuery(document).ready(function($) {
                                             proposalsTable+="<td>"+proposals[proposalNumber].proposalPassed+"</td>";
                                             proposalsTable+="<td>"+proposals[proposalNumber].tyoeOfProposal+"</td>";
                                             proposalsTable+="</tr>";
+                                            console.log(proposalsTable);
+                                            // FIXME: If there are 5 proposals this will get printed 5 times.
+                                            $("div[id=proposalsTable]").html(proposalsTable);                                                            
+                                        }else{
+                                            console.log('Can\'t find proposals', error);
                                         }
-                                        proposalsTable+="</table>";
-                                        console.log(proposalsTable);
-                                        $("div[id=proposalsTable]").html(proposalsTable);
-                                        
                                     });
-                                }
+                                }// end of for loop                                    
+
                             }else{
                                 console.log('Can\'t find numProposals', error);
                             }
                         });
-                        
- 
-            
                     });
                 }else{
                     console.log('Can\'t find voting contract address', error);
                 }
+                proposalsTable+="</table>";
+                console.log(proposalsTable);
+                $("div[id=proposalsTable]").html(proposalsTable);                
             });
-    
         });
-
     };
 
     function timeStringToTimestamp(str){
