@@ -148,7 +148,7 @@ contract SimpleVoting is Ownable {
         Proposal storage p = proposals[proposalNumber];
         require(p.voted[msg.sender] != true);
 
-        require(now > p.votingDeadline                                             // If it is past the voting deadline
+        require(now < p.votingDeadline                                             // If it is past the voting deadline
             && !p.executed);                                                       // and it has not already been executed
 
         uint voteID = p.votes.length++;
