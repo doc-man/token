@@ -79,54 +79,54 @@ jQuery(document).ready(function($) {
             pContractInstance.votingContract(function(error, result){
                 if(!error){
                     $('input[name=votingContract]','#dashboardForm').val(result);
+                    loadContract(votingContractUrl, function(data){
+                        votingContract = data;
+                        let contractObj = web3.eth.contract(votingContract.abi); //The json interface for the contract to instantiate
+            
+                        votingContractAddress = $('input[name=votingContract]','#dashboardForm').val();
+                        pContractInstance = contractObj.at(votingContractAddress);
+            
+                        pContractInstance.minimumQuorum(function(error, result){
+                            if(!error){
+                                let amount = web3.fromWei(result, 'ether');
+                                $('input[name=minimumQuorum]','#dashboardForm').val(amount);
+                            }else{
+                                console.log('Can\'t find minimum quorum', error);
+                            }
+                        });
+            
+                        pContractInstance.debatingPeriodInSeconds(function(error, result){
+                            if(!error){
+                                $('input[name=debatingPeriodInSeconds]','#dashboardForm').val(result);
+                            }else{
+                                console.log('Can\'t find debating Period In Seconds', error);
+                            }
+                        });
+                        
+                        pContractInstance.getProposalsCount(function(error, result){
+                            if(!error){
+                                console.log(result);
+                                $('input[name=numProposals]','#dashboardForm').val(result);
+                            }else{
+                                console.log('Can\'t find numProposals', error);
+                            }
+                        });
+                        
+                        let proposalNumber = 0;
+                        pContractInstance.getProposal(proposalNumber,function(error, result){
+                            if(!error){
+                                console.log(result);
+                            }else{
+                                console.log('Can\'t find proposals', error);
+                            }
+                        });
+            
+                    });
                 }else{
                     console.log('Can\'t find voting contract address', error);
                 }
             });
     
-        });
-        loadContract(votingContractUrl, function(data){
-            votingContract = data;
-            let contractObj = web3.eth.contract(votingContract.abi); //The json interface for the contract to instantiate
-
-            votingContractAddress = $('input[name=votingContract]','#dashboardForm').val();
-            pContractInstance = contractObj.at(votingContractAddress);
-
-            pContractInstance.minimumQuorum(function(error, result){
-                if(!error){
-                    let amount = web3.fromWei(result, 'ether');
-                    $('input[name=minimumQuorum]','#dashboardForm').val(amount);
-                }else{
-                    console.log('Can\'t find minimum quorum', error);
-                }
-            });
-
-            pContractInstance.debatingPeriodInSeconds(function(error, result){
-                if(!error){
-                    $('input[name=debatingPeriodInSeconds]','#dashboardForm').val(result);
-                }else{
-                    console.log('Can\'t find debating Period In Seconds', error);
-                }
-            });
-            
-            pContractInstance.getProposalsCount(function(error, result){
-                if(!error){
-                    console.log(result);
-                    $('input[name=numProposals]','#dashboardForm').val(result);
-                }else{
-                    console.log('Can\'t find numProposals', error);
-                }
-            });
-            
-            let proposalNumber = 0;
-            pContractInstance.getProposal(proposalNumber,function(error, result){
-                if(!error){
-                    console.log(result);
-                }else{
-                    console.log('Can\'t find proposals', error);
-                }
-            });
-
         });
 
     };
