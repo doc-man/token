@@ -116,12 +116,40 @@ jQuery(document).ready(function($) {
                                             proposal["recipient"] = result[0];
                                             proposal["amount"] = result[1].toString();
                                             proposal["description"] = result[2];
-                                            proposal["votingDeadline"] = result[2];
+                                            proposal["votingDeadline"] = result[3];
+                                            proposal["numberOfVotes"] = result[4];
+                                            proposal["executed"] = result[5];
+                                            proposal["proposalPassed"] = result[6];
+                                            proposal["typeOfProposal"] = result[7];
                                             proposals.push(proposal);                                           
                                         }else{
                                             console.log('Can\'t find proposals', error);
                                         }
-                                        console.log(proposals);
+                                        // now printing the array of proposals on the screen
+                                        var proposalsTable = "<table border=1><th>Recipient</th><th>Amount</th><th>Description</th><th>Voting Deadline</th><th># of votes</th><th>Executed</th><th>Proposal passed</th><th>Type of proposal</th>";
+                                        for (proposalNumber = 0; proposalNumber < numberOfProposals; proposalNumber++) {    
+                                            proposalsTable+="<tr>";
+                                            proposalsTable+="<td>"+proposals[proposalNumber].recipient+"</td>";
+                                            let amount = web3.fromWei(proposals[proposalNumber].amount, 'ether');
+                                            proposalsTable+="<td>"+amount+"</td>";
+                                            proposalsTable+="<td>"+proposals[proposalNumber].description+"</td>";
+                                            // ref: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript    
+                                            var date = new Date(proposals[proposalNumber].votingDeadline*1000);
+                                            var hours = date.getHours();
+                                            var minutes = "0" + date.getMinutes();
+                                            var seconds = "0" + date.getSeconds();
+                                            var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+                                            proposalsTable+="<td>"+timeConverter(proposals[proposalNumber].votingDeadline)+"</td>";
+                                            proposalsTable+="<td>"+proposals[proposalNumber].numberOfVotes+"</td>";
+                                            proposalsTable+="<td>"+proposals[proposalNumber].executed+"</td>";
+                                            proposalsTable+="<td>"+proposals[proposalNumber].proposalPassed+"</td>";
+                                            proposalsTable+="<td>"+proposals[proposalNumber].tyoeOfProposal+"</td>";
+                                           proposalsTable+="</tr>";
+                                        }
+                                        proposalsTable+="</table>";
+                                        console.log(proposalsTable);
+                                        $("div[id=proposalsTable]").html(proposalsTable);
+                                        
                                     });
                                 }
                             }else{
@@ -163,5 +191,17 @@ jQuery(document).ready(function($) {
         }
     }
 
-
+    // ref: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
+    function timeConverter(UNIX_timestamp){
+        var a = new Date(UNIX_timestamp * 1000);
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var year = a.getFullYear();
+        var month = months[a.getMonth()];
+        var date = a.getDate();
+        var hour = a.getHours();
+        var min = a.getMinutes();
+        var sec = a.getSeconds();
+        var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+        return time;
+      }
 });

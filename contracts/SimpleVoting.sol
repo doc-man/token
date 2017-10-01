@@ -230,8 +230,27 @@ contract SimpleVoting is Ownable {
         return proposals.length+1;
     }
 
-    function getProposal(uint index) public constant returns(address, uint, string, uint) {
-        return (proposals[index].recipient, proposals[index].amount, proposals[index].description, proposals[index].votingDeadline);
+    function getProposal(uint index) public constant returns(address, uint, string, uint, uint, bool, bool, string) {
+
+        let typeOfProposal = "";
+        if(proposals[index].typeOfProposal == Type.Ether) {
+            typeOfProposal = "Get ether";
+        } else if(proposals[index].typeOfProposal == Type.Token) {
+            typeOfProposal = "Get HLT";
+        } else if(proposals[index].typeOfProposal == Type.VotingAddress) {
+            typeOfProposal = "Change Voting address";
+        } else if(proposals[index].typeOfProposal == Type.Terminate) {
+            typeOfProposal = "Terminate a proposal";
+        }        
+
+        return (proposals[index].recipient, 
+                proposals[index].amount, 
+                proposals[index].description, 
+                proposals[index].votingDeadline, 
+                proposals[index].numberOfVotes, 
+                proposals[index].executed, 
+                proposals[index].proposalPassed,
+                typeOfProposal);
     }
 
 }
