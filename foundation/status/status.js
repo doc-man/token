@@ -2,7 +2,7 @@ var $ = jQuery;
 jQuery(document).ready(function($) {
 
     let web3;
-    let foundation  = "0x4b52e2a3e093c10e7a4e7a30b1509050ea5273c1";    
+    let foundation  = "0xdd40fc261b61061fba0acbd4c46c638c0bff7a92";    
     let votingContractAddress; // this value is retrieved from foundation
 
     function loadContract(url, callback){
