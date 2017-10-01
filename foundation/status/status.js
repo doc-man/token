@@ -144,7 +144,7 @@ jQuery(document).ready(function($) {
                                             proposalsTable+="<td>"+proposals[proposalNumber].executed+"</td>";
                                             proposalsTable+="<td>"+proposals[proposalNumber].proposalPassed+"</td>";
                                             proposalsTable+="<td>"+proposals[proposalNumber].tyoeOfProposal+"</td>";
-                                           proposalsTable+="</tr>";
+                                            proposalsTable+="</tr>";
                                         }
                                         proposalsTable+="</table>";
                                         console.log(proposalsTable);

@@ -230,18 +230,13 @@ contract SimpleVoting is Ownable {
         return proposals.length+1;
     }
 
-    function getProposal(uint index) public constant returns(address, uint, string, uint, uint, bool, bool, string) {
-
-        let typeOfProposal = "";
-        if(proposals[index].typeOfProposal == Type.Ether) {
-            typeOfProposal = "Get ether";
-        } else if(proposals[index].typeOfProposal == Type.Token) {
-            typeOfProposal = "Get HLT";
-        } else if(proposals[index].typeOfProposal == Type.VotingAddress) {
-            typeOfProposal = "Change Voting address";
-        } else if(proposals[index].typeOfProposal == Type.Terminate) {
-            typeOfProposal = "Terminate a proposal";
-        }        
+    function getProposal(uint index) public constant returns(address, 
+                                                            uint, 
+                                                            string, 
+                                                            uint, 
+                                                            uint, 
+                                                            bool, 
+                                                            bool) {
 
         return (proposals[index].recipient, 
                 proposals[index].amount, 
@@ -249,8 +244,15 @@ contract SimpleVoting is Ownable {
                 proposals[index].votingDeadline, 
                 proposals[index].numberOfVotes, 
                 proposals[index].executed, 
-                proposals[index].proposalPassed,
-                typeOfProposal);
+                proposals[index].proposalPassed);
     }
+
+    function getProposalType(uint index) public constant returns(uint) {
+        // if i return this as part of getProposal I get the CompilerError: Stack too deep, try removing local variables.
+        uint proposalType = uint(proposals[index].typeOfProposal);
+        return (proposalType);
+    }
+
+
 
 }
