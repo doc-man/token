@@ -72,7 +72,7 @@ jQuery(document).ready(function($) {
 
                 var form = $('#voteForProposalForm');
                 let votingAddress = $('input[name=votingAddress]', form).val();
-                let proposalNumber      = web3.toWei($('input[name=amount]', form).val(), 'ether');
+                let proposalNumber      = $('input[name=proposalNumber]', form).val(); 
                 let voteRadio = $('input[name=vote]:checked');
                 if(voteRadio.length != 1){
                     alert('No vote selected!');

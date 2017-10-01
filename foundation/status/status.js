@@ -141,10 +141,10 @@ jQuery(document).ready(function($) {
                                             var seconds = "0" + date.getSeconds();
                                             var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
                                             proposalsTable+="<td>"+timeConverter(proposals[proposalNumber].votingDeadline)+"</td>";
-                                            proposalsTable+="<td>"+proposals[proposalNumber].numberOfVotes+"</td>";
-                                            proposalsTable+="<td>"+proposals[proposalNumber].executed+"</td>";
+                                            proposalsTable+="<td>"+proposals[proposalNumber].numberOfVotes+"<label><input type='radio' name='vote' value='for'>For</label><label><input type='radio' name='vote' value='against'>Against</label></div><input type='button' id='submitVote' value='Submit Vote'></td>";
+                                            proposalsTable+="<td>"+proposals[proposalNumber].executed+"<input type=submit value=execute></td>";
                                             proposalsTable+="<td>"+proposals[proposalNumber].proposalPassed+"</td>";
-                                            proposalsTable+="<td>"+proposals[proposalNumber].tyoeOfProposal+"</td>";
+                                            proposalsTable+="<td>"+proposals[proposalNumber].typeOfProposal+"</td>";
                                             proposalsTable+="</tr>";
                                             console.log(proposalsTable);
                                             // FIXME: If there are 5 proposals this will get printed 5 times.
@@ -169,6 +169,53 @@ jQuery(document).ready(function($) {
             });
         });
     };
+
+    $('#submitVote').click(function(){
+        loadContract(votingContractUrl, function(data){
+            votingContract = data;
+
+            var form = $('#voteForProposalForm');
+            let votingAddress = $('input[name=votingAddress]', form).val();
+            let proposalNumber      = 0;
+            let voteRadio = $('input[name=vote]:checked');
+            if(voteRadio.length != 1){
+                alert('No vote selected!');
+                return;
+            }
+            let vote;
+            switch(voteRadio.val()){
+                case 'for':
+                    vote = true;
+                    break;
+                case 'against':
+                    vote = false;
+                    break;
+                default:
+                    alert('Unknown vote!');
+                    return;
+            }
+
+            let contractObj = web3.eth.contract(votingContract.abi);
+            let contractInstance = contractObj.at(votingAddress);
+
+            console.log('Calling '+votingContract.contract_name+'.vote() with parameters:\n', 
+                proposalNumber, vote,
+                'ABI', JSON.stringify(votingContract.abi));
+            contractInstance.vote(
+                proposalNumber, vote,
+                function(error, result){
+                    if(!error){
+                        console.log("Vote tx: ",result);
+                        $('input[name=publishedTx]',form).val(result);
+                    }else{
+                        console.error(error)
+                    }
+                }
+            );
+        });
+    });   
+
+
 
     function timeStringToTimestamp(str){
         return Math.round(Date.parse(str)/1000);
