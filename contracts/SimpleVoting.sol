@@ -166,7 +166,7 @@ contract SimpleVoting is Ownable {
      *
      * @param proposalNumber proposal number
      */
-    function executeVoting(uint proposalNumber) {
+    function executeVoting(uint proposalNumber) public {
         Proposal storage p = proposals[proposalNumber];
 
         require(now > p.votingDeadline                                             // If it is past the voting deadline
@@ -193,9 +193,6 @@ contract SimpleVoting is Ownable {
 
         if (yea > nay ) {
             // Proposal passed; execute the transaction
-
-            p.executed = true;
-
             p.proposalPassed = true;
         } else {
             // Proposal failed
@@ -206,7 +203,7 @@ contract SimpleVoting is Ownable {
         ProposalTallied(proposalNumber, yea - nay, quorum, p.proposalPassed);
     }
 
-    function executeProposal(uint proposalNumber){
+    function executeProposal(uint proposalNumber) public {
         Proposal storage p = proposals[proposalNumber];
         require(p.proposalPassed && !p.executed);
         p.executed = true;

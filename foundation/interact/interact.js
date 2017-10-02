@@ -115,31 +115,34 @@ jQuery(document).ready(function($) {
 
         $('#countVotes').click(function(){
             printError(null);
-            if(!isWeb3Connected()) return;
-            if(!votingContract) {printError('Load contracts first!'); return;}
+            loadContract(votingContractUrl, function(data){
+                votingContract = data;
+                if(!votingContract) {printError('Load contracts first!'); return;}
 
-            var form = $('#countVotesForm');
-            let votingAddress = $('input[name=votingAddress]', form).val();
-            let proposalNumber      = web3.toWei($('input[name=amount]', form).val(), 'ether');
+                var form = $('#countVotesForm');
+                let votingAddress = $('input[name=votingAddress]', form).val();
+                let proposalNumber      = web3.toWei($('input[name=amount]', form).val(), 'ether');
 
-            let contractObj = web3.eth.contract(votingContract.abi);
-            let contractInstance = contractObj.at(votingAddress);
+                let contractObj = web3.eth.contract(votingContract.abi);
+                let contractInstance = contractObj.at(votingAddress);
 
-            console.log('Calling '+votingContract.contract_name+'.executeVoting() with parameters:\n', 
-                proposalNumber,
-                'ABI', JSON.stringify(votingContract.abi));
-            contractInstance.executeVoting(
-                proposalNumber,
-                function(error, result){
-                    if(!error){
-                        console.log("Execute voting tx: ",result);
-                        $('input[name=publishedTx]',form).val(result);
-                    }else{
-                        console.error(error)
+                console.log('Calling '+votingContract.contract_name+'.executeVoting() with parameters:\n', 
+                    proposalNumber,
+                    'ABI', JSON.stringify(votingContract.abi));
+                contractInstance.executeVoting(
+                    proposalNumber,
+                    function(error, result){
+                        if(!error){
+                            console.log("Execute voting tx: ",result);
+                            $('input[name=publishedTx]',form).val(result);
+                        }else{
+                            console.error(error)
+                        }
                     }
-                }
-            );
+                );
+            });
         });
+
         $('#changeVotingRules').click(function(){
             loadContract(votingContractUrl, function(data){
                 votingContract = data;
