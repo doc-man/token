@@ -47,3 +47,15 @@ faucet.rinkeby.io
 10. Go to tab 2 -> http://127.0.0.1:8000/voting/
 Use Step 2 to Publish simple voting contract.
 
+11. Go to tab 3 -> http://127.0.0.1:8000/proposals/0/
+In step 2 -> Enter the foundation address and token address.
+Click publish.
+This will give the Crowdsale published at.
+
+12. Go to tab 4 -> http://127.0.0.1:8000/foundation/interact/
+Enter the voting address, beneficiary address (This is the crowssale contract address), amount and description
+
+13. In editor open the file status.js and change the foundation address that you received in tab 1
+
+14. Refresh tab 5 and that will give the details.
+
