@@ -2,7 +2,7 @@ var $ = jQuery;
 jQuery(document).ready(function($) {
 
     let web3;
-    let foundation  = "0x5f34330ae098136394abc3b4b3628964fb253bf7";    
+    let foundation  = "0x3322f65041ee98ca3b069d76d2171de4032173d6";    
     let votingContractAddress; // this value is retrieved from foundation
 
     function loadContract(url, callback){
@@ -104,7 +104,7 @@ jQuery(document).ready(function($) {
                             }
                         });
 
-                        let proposalsTable = "<table border=1><th>Recipient</th><th>Amount</th><th>Description</th><th>Voting Deadline</th><th># of votes</th><th>Executed</th><th>Proposal passed</th><th>Type of proposal</th>";                        
+                        let proposalsTable = "<table border=1><th>Proposal ID</th><th>Recipient</th><th>Amount</th><th>Description</th><th>Voting Deadline</th><th># of votes</th><th>Proposal passed</th><th>Executed</th><th>Type of proposal</th>";                        
                         let numberOfProposals = 0;
                         let proposals = new Array();
                         pContractInstance.getProposalsCount(function(error, result){
@@ -130,6 +130,7 @@ jQuery(document).ready(function($) {
                                             proposals.push(proposal);       
                                             console.log(proposals);
                                             proposalsTable+="<tr>";
+                                            proposalsTable+="<td>"+proposalNumber+"</td>";                                            
                                             proposalsTable+="<td>"+proposals[proposalNumber].recipient+"</td>";
                                             let amount = web3.fromWei(proposals[proposalNumber].amount, 'ether');
                                             proposalsTable+="<td>"+amount+"</td>";
@@ -142,8 +143,8 @@ jQuery(document).ready(function($) {
                                             var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
                                             proposalsTable+="<td>"+timeConverter(proposals[proposalNumber].votingDeadline)+"</td>";
                                             proposalsTable+="<td>"+proposals[proposalNumber].numberOfVotes+"<label><input type='radio' name='vote' value='for'>For</label><label><input type='radio' name='vote' value='against'>Against</label></div><input type='button' id='submitVote' value='Submit Vote'></td>";
+                                            proposalsTable+="<td>"+proposals[proposalNumber].proposalPassed+"<input type=submit value='count votes'></td></td>";
                                             proposalsTable+="<td>"+proposals[proposalNumber].executed+"<input type=submit value=execute></td>";
-                                            proposalsTable+="<td>"+proposals[proposalNumber].proposalPassed+"</td>";
                                             proposalsTable+="<td>"+proposals[proposalNumber].typeOfProposal+"</td>";
                                             proposalsTable+="</tr>";
                                             console.log(proposalsTable);
