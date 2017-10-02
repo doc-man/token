@@ -29,7 +29,10 @@ jQuery(document).ready(function($) {
         startApp();
     
     });    
-
+   
+    function submitVote(index) {
+        console.log("Submit vote");
+    }
     function startApp(){
 
         const tokenContractUrl       = '../../build/contracts/HealthToken.json';
@@ -113,11 +116,56 @@ jQuery(document).ready(function($) {
                                 numberOfProposals = $('input[name=numProposals]','#dashboardForm').val();
                                 // inside the for loop I am calling a async function. For loop will funish running immediately. While all your asynchronous operations are started. 
                                 // Ref: https://stackoverflow.com/questions/11488014/asynchronous-process-inside-a-javascript-for-loop
-                                
-                                for (let proposalNumber = 0; proposalNumber < numberOfProposals; proposalNumber++) { 
+                                let proposalNumber = 0;
+                                for (let indexCount = 0; indexCount < numberOfProposals; indexCount ++) { 
                                     console.log(proposalNumber);
                                     pContractInstance.getProposal(proposalNumber,function(error, result){
                                         if(!error){
+                                            console.log('#submitVote_'+proposalNumber);
+                                            $('#submitVote_'+proposalNumber).click(function(){
+                                                loadContract(votingContractUrl, function(data){
+                                                    votingContract = data;
+                                        
+                                                    var form = $('#voteForProposalForm');
+                                                    let votingAddress = $('input[name=votingAddress]', form).val();
+                                                    let proposalNumber      = 0;
+                                                    let voteRadio = $('input[name=vote]:checked');
+                                                    if(voteRadio.length != 1){
+                                                        alert('No vote selected!');
+                                                        return;
+                                                    }
+                                                    let vote;
+                                                    switch(voteRadio.val()){
+                                                        case 'for':
+                                                            vote = true;
+                                                            break;
+                                                        case 'against':
+                                                            vote = false;
+                                                            break;
+                                                        default:
+                                                            alert('Unknown vote!');
+                                                            return;
+                                                    }
+                                        
+                                                    let contractObj = web3.eth.contract(votingContract.abi);
+                                                    let contractInstance = contractObj.at(votingAddress);
+                                        
+                                                    console.log('Calling '+votingContract.contract_name+'.vote() with parameters:\n', 
+                                                        proposalNumber, vote,
+                                                        'ABI', JSON.stringify(votingContract.abi));
+                                                    contractInstance.vote(
+                                                        proposalNumber, vote,
+                                                        function(error, result){
+                                                            if(!error){
+                                                                console.log("Vote tx: ",result);
+                                                                $('input[name=publishedTx]',form).val(result);
+                                                            }else{
+                                                                console.error(error)
+                                                            }
+                                                        }
+                                                    );
+                                                });
+                                            });
                                             var proposal = {};
                                             proposal["recipient"] = result[0];
                                             proposal["amount"] = result[1].toString();
@@ -142,7 +190,7 @@ jQuery(document).ready(function($) {
                                             var seconds = "0" + date.getSeconds();
                                             var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
                                             proposalsTable+="<td>"+timeConverter(proposals[proposalNumber].votingDeadline)+"</td>";
-                                            proposalsTable+="<td>"+proposals[proposalNumber].numberOfVotes+"<label><input type='radio' name='vote' value='for'>For</label><label><input type='radio' name='vote' value='against'>Against</label></div><input type='button' id='submitVote' value='Submit Vote'></td>";
+                                            proposalsTable+="<td>"+proposals[proposalNumber].numberOfVotes+"<label><input type='radio' name='vote_"+proposalNumber+"' value='for'>For</label><label><input type='radio' name='vote_"+proposalNumber+"' value='against'>Against</label></div><input type='button' id='submitVote_"+proposalNumber+"' value='Submit Vote'></td>";
                                             proposalsTable+="<td>"+proposals[proposalNumber].proposalPassed+"<input type=submit value='count votes'></td></td>";
                                             proposalsTable+="<td>"+proposals[proposalNumber].executed+"<input type=submit value=execute></td>";
                                             proposalsTable+="<td>"+proposals[proposalNumber].typeOfProposal+"</td>";
@@ -153,6 +201,8 @@ jQuery(document).ready(function($) {
                                         }else{
                                             console.log('Can\'t find proposals', error);
                                         }
+                                        
+                                        proposalNumber ++;
                                     });
                                 }// end of for loop                                    
 
@@ -170,53 +220,6 @@ jQuery(document).ready(function($) {
             });
         });
     };
-
-    $('#submitVote').click(function(){
-        loadContract(votingContractUrl, function(data){
-            votingContract = data;
-
-            var form = $('#voteForProposalForm');
-            let votingAddress = $('input[name=votingAddress]', form).val();
-            let proposalNumber      = 0;
-            let voteRadio = $('input[name=vote]:checked');
-            if(voteRadio.length != 1){
-                alert('No vote selected!');
-                return;
-            }
-            let vote;
-            switch(voteRadio.val()){
-                case 'for':
-                    vote = true;
-                    break;
-                case 'against':
-                    vote = false;
-                    break;
-                default:
-                    alert('Unknown vote!');
-                    return;
-            }
-
-            let contractObj = web3.eth.contract(votingContract.abi);
-            let contractInstance = contractObj.at(votingAddress);
-
-            console.log('Calling '+votingContract.contract_name+'.vote() with parameters:\n', 
-                proposalNumber, vote,
-                'ABI', JSON.stringify(votingContract.abi));
-            contractInstance.vote(
-                proposalNumber, vote,
-                function(error, result){
-                    if(!error){
-                        console.log("Vote tx: ",result);
-                        $('input[name=publishedTx]',form).val(result);
-                    }else{
-                        console.error(error)
-                    }
-                }
-            );
-        });
-    });   
-
-
 
     function timeStringToTimestamp(str){
         return Math.round(Date.parse(str)/1000);
