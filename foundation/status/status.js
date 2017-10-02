@@ -104,7 +104,7 @@ jQuery(document).ready(function($) {
                             }
                         });
 
-                        let proposalsTable = "<table border=1><th>Proposal ID</th><th>Recipient</th><th>Amount</th><th>Description</th><th>Voting Deadline</th><th># of votes</th><th>Proposal passed</th><th>Executed</th><th>Type of proposal</th>";                        
+                        let proposalsTable = "<table border=1><th>Proposal ID</th><th>Recipient</th><th>Amount (HLT/Ether)</th><th>Description</th><th>Voting Deadline</th><th># of votes</th><th>Proposal passed</th><th>Executed</th><th>Type of proposal</th>";                        
                         let numberOfProposals = 0;
                         let proposals = new Array();
                         pContractInstance.getProposalsCount(function(error, result){
