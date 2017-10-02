@@ -33,6 +33,13 @@ http://127.0.0.1:8000/foundation/status/
 6. Compile
    $ truffle compile
 
-7. Get some tokens from rinkeby faucet.
+7. Create two accounts on metamask
+   1. Founder
+   2. Foundation creator
 
-8. Use http://127.0.0.1:8000/foundation/genesis/ to create the foundation.
+8. Get some ether from rinkeby faucet to the foundation creator wallet.
+faucet.rinkeby.io
+
+9. Use http://127.0.0.1:8000/foundation/genesis/ to create the foundation.
+   Use step 2 -> Publish foundation contract.
+
