@@ -140,6 +140,35 @@ jQuery(document).ready(function($) {
                 }
             );
         });
+        $('#changeVotingRules').click(function(){
+            loadContract(votingContractUrl, function(data){
+                votingContract = data;
+                if(!votingContract) {printError('Load contracts first!'); return;}
+
+                var form = $('#changeVotingRulesForm');
+                let votingAddress = $('input[name=votingAddress]', form).val();
+                let votesNumber = $('input[name=votesNumber]', form).val();
+                let votingDeadline = $('input[name=votingDeadline]', form).val();
+                console.log(votingAddress);
+                let contractObj = web3.eth.contract(votingContract.abi);
+                let contractInstance = contractObj.at(votingAddress);
+
+                console.log('Calling '+votingContract.contract_name+'.changeVotingRules() with parameters:\n', 
+                    votesNumber, votingDeadline,
+                    'ABI', JSON.stringify(votingContract.abi));
+                contractInstance.changeVotingRules(
+                    votesNumber, votingDeadline,
+                    function(error, result){
+                        if(!error){
+                            console.log("Execute voting tx: ",result);
+                            $('input[name=publishedTx]',form).val(result);
+                        }else{
+                            console.error(error)
+                        }
+                    }
+                );
+            });
+        });
     };
 
     //====================================================
