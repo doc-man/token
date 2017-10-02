@@ -74,7 +74,8 @@ jQuery(document).ready(function($) {
             });
             pContractInstance.getEtherBalance(function(error, result){
                 if(!error){
-                    $('input[name=numberOfEther]','#dashboardForm').val(result);
+                    let amount = web3.fromWei(result, 'ether');
+                    $('input[name=numberOfEther]','#dashboardForm').val(amount);
                 }else{
                     console.log('Can\'t find number of ether', error);
                 }
