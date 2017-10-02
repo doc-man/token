@@ -32,3 +32,7 @@ http://127.0.0.1:8000/foundation/status/
 
 6. Compile
    $ truffle compile
+
+7. Get some tokens from rinkeby faucet.
+
+8. Use http://127.0.0.1:8000/foundation/genesis/ to create the foundation.
