@@ -121,7 +121,7 @@ jQuery(document).ready(function($) {
 
                 var form = $('#countVotesForm');
                 let votingAddress = $('input[name=votingAddress]', form).val();
-                let proposalNumber      = web3.toWei($('input[name=amount]', form).val(), 'ether');
+                let proposalNumber      = $('input[name=proposalNumber]', form).val();
 
                 let contractObj = web3.eth.contract(votingContract.abi);
                 let contractInstance = contractObj.at(votingAddress);
@@ -151,8 +151,8 @@ jQuery(document).ready(function($) {
 
                 var form = $('#countVotesForm');
                 let votingAddress = $('input[name=votingAddress]', form).val();
-                let proposalNumber      = web3.toWei($('input[name=amount]', form).val(), 'ether');
-
+                let proposalNumber      = $('input[name=proposalNumber]', form).val();
+                
                 let contractObj = web3.eth.contract(votingContract.abi);
                 let contractInstance = contractObj.at(votingAddress);
 
