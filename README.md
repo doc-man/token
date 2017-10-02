@@ -23,7 +23,8 @@ http://127.0.0.1:8000/proposals/0/
 http://127.0.0.1:8000/foundation/interact/
 http://127.0.0.1:8000/foundation/status/
 
-3. Make sure metamask extension is installed.
+3. Make sure metamask extension is installed on chromium.
+These steps were tested with Chromium Version 62.0.3168.0 (Developer Build) (64-bit)
 
 4. Use the rinkeby test network in metamask.
 
@@ -42,4 +43,7 @@ faucet.rinkeby.io
 
 9. Use http://127.0.0.1:8000/foundation/genesis/ to create the foundation.
    Use step 2 -> Publish foundation contract.
+
+10. Go to tab 2 -> http://127.0.0.1:8000/voting/
+Use Step 2 to Publish simple voting contract.
 
