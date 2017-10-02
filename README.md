@@ -16,7 +16,7 @@ We can check if there are tokens available before sending internal transaction, 
 Q) How to run it on local machine?
 1. python -m SimpleHTTPServer 8000
 
-2. Then open:
+2. Then open in 5 tabs:
 http://127.0.0.1:8000/foundation/genesis/
 http://127.0.0.1:8000/voting/
 http://127.0.0.1:8000/proposals/0/
@@ -26,3 +26,9 @@ http://127.0.0.1:8000/foundation/status/
 3. Make sure metamask extension is installed.
 
 4. Use the rinkeby test network in metamask.
+
+5. Install truffle
+   $ npm install -g truffle
+
+6. Compile
+   $ truffle compile
