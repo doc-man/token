@@ -116,8 +116,8 @@ jQuery(document).ready(function($) {
                                 numberOfProposals = $('input[name=numProposals]','#dashboardForm').val();
                                 // inside the for loop I am calling a async function. For loop will funish running immediately. While all your asynchronous operations are started. 
                                 // Ref: https://stackoverflow.com/questions/11488014/asynchronous-process-inside-a-javascript-for-loop
-                                let proposalNumber = 0;
-                                for (let indexCount = 0; indexCount < numberOfProposals; indexCount ++) { 
+                                // let proposalNumber = 0;
+                                for (let proposalNumber = 0; proposalNumber < numberOfProposals; proposalNumber ++) { 
                                     console.log(proposalNumber);
                                     pContractInstance.getProposal(proposalNumber,function(error, result){
                                         if(!error){
@@ -202,7 +202,7 @@ jQuery(document).ready(function($) {
                                             console.log('Can\'t find proposals', error);
                                         }
                                         
-                                        proposalNumber ++;
+                                        // proposalNumber ++;
                                     });
                                 }// end of for loop                                    
 
