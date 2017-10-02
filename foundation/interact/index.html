@@ -39,7 +39,15 @@
     <label>Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label>
 </form>
 
-<h2>4. Change voting rules</h2>
+<h2>4. Execute proposal</h2>
+<form id="executeProposalForm"  class="contractForm">
+    <label>votingAddress: <input type="text" name="votingAddress" value="" class="ethAddress"></label>
+    <label>proposalNumber: <input type="text" name="description" value="" class="ethAddress"></label>
+    <input type="button" id="executeProposal" value="Execute proposal">
+    <label>Transaction: <input type="text" readonly name="publishedTx" value="" class="ethTx"></label>
+</form>
+
+<h2>5. Change voting rules</h2>
 <form id="changeVotingRulesForm"  class="contractForm">
     <label>votingAddress: <input type="text" name="votingAddress" value="" class="ethAddress"></label>
     <label>votesNumber: <input type="text" name="votesNumber" value="" class="ethAddress"></label>

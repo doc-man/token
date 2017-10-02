@@ -143,6 +143,39 @@ jQuery(document).ready(function($) {
             });
         });
 
+        $('#executeProposal').click(function(){
+            printError(null);
+            loadContract(votingContractUrl, function(data){
+                votingContract = data;
+                if(!votingContract) {printError('Load contracts first!'); return;}
+
+                var form = $('#countVotesForm');
+                let votingAddress = $('input[name=votingAddress]', form).val();
+                let proposalNumber      = web3.toWei($('input[name=amount]', form).val(), 'ether');
+
+                let contractObj = web3.eth.contract(votingContract.abi);
+                let contractInstance = contractObj.at(votingAddress);
+
+                console.log('Calling '+votingContract.contract_name+'.executeProposal() with parameters:\n', 
+                    proposalNumber,
+                    'ABI', JSON.stringify(votingContract.abi));
+                contractInstance.executeProposal(
+                    proposalNumber,
+                    function(error, result){
+                        if(!error){
+                            console.log("Execute voting tx: ",result);
+                            $('input[name=publishedTx]',form).val(result);
+                        }else{
+                            console.error(error)
+                        }
+                    }
+                );
+            });
+        });
+
+
+
+
         $('#changeVotingRules').click(function(){
             loadContract(votingContractUrl, function(data){
                 votingContract = data;
