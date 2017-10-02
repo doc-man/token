@@ -12,6 +12,12 @@ QUESTIONS:
 Currently, we will try to send tham anyway, will fail on SafeMath.sub() and transaction will be reverted eating all gas.
 We can check if there are tokens available before sending internal transaction, but this will eat some gas for each token sale and for now (before Metropolis release) require() will eat all gas anyway.
 
+Q) What is the goals of this smart contract system?
+1. The HCF foundation gives 20% of tokens to the founder and keeps 80% for itself.
+2. The foundation has a pointer to the voting contract. This voting contract can be upgraded through a vote mechanism.
+3. Existing HLT token holders can make Poposals to the voting contract.
+4. Existing HLT token holders can then vote on the prpopals.
+5. Once the time foe debate has passed than propoals can be executed and if they win then Tokens are sent to the proposal.
 
 Q) How to run it on local machine?
 1. python -m SimpleHTTPServer 8000
@@ -47,15 +53,17 @@ faucet.rinkeby.io
 10. Go to tab 2 -> http://127.0.0.1:8000/voting/
 Use Step 2 to Publish simple voting contract.
 
-11. Go to tab 3 -> http://127.0.0.1:8000/proposals/0/
+11. Go to tab 1 -> Initialize foundation with simple voting
+
+12. Go to tab 3 -> http://127.0.0.1:8000/proposals/0/
 In step 2 -> Enter the foundation address and token address.
 Click publish.
 This will give the Crowdsale published at.
 
-12. Go to tab 4 -> http://127.0.0.1:8000/foundation/interact/
+13. Go to tab 4 -> http://127.0.0.1:8000/foundation/interact/
 Enter the voting address, beneficiary address (This is the crowssale contract address), amount and description
 
-13. In editor open the file status.js and change the foundation address that you received in tab 1
+14. In editor open the file status.js and change the foundation address that you received in tab 1
 
-14. Refresh tab 5 and that will give the details.
+15. Refresh tab 5 and that will give the details.
 
