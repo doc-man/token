@@ -149,7 +149,7 @@ jQuery(document).ready(function($) {
                 votingContract = data;
                 if(!votingContract) {printError('Load contracts first!'); return;}
 
-                var form = $('#countVotesForm');
+                var form = $('#executeProposalForm');
                 let votingAddress = $('input[name=votingAddress]', form).val();
                 let proposalNumber      = $('input[name=proposalNumber]', form).val();
                 
