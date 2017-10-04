@@ -32,9 +32,6 @@ jQuery(document).ready(function($) {
         startApp();
     
     });    
-   $('#proposalsTable').on('click', function(){
-       console.log('click');
-   });
     
     var proposalRowCount = 0;
     function creatProposalsTableRow(pContractInstance, numberOfProposals) {
@@ -110,8 +107,8 @@ jQuery(document).ready(function($) {
                     var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
                     proposalsTableBody+="<td>"+timeConverter(proposal.votingDeadline)+"</td>";
                     proposalsTableBody+="<td>"+proposal.numberOfVotes+"<label><input type='radio' name='vote_"+proposalNumber+"' value='for'>For</label><label><input type='radio' name='vote_"+proposalNumber+"' value='against'>Against</label></div><input type='button' id='submitVote_"+proposalNumber+"' onclick='submitVoteMain("+proposalNumber+")' value='Submit Vote'></td>";
-                    proposalsTableBody+="<td>"+proposal.proposalPassed+"<input type=button value='count votes'></td></td>";
-                    proposalsTableBody+="<td>"+proposal.executed+"<input type=submit value=execute></td>";
+                    proposalsTableBody+="<td>"+proposal.proposalPassed+"<input type=button onclick='submitCountVotes("+proposalNumber+")' value='count votes'></td></td>";
+                    proposalsTableBody+="<td>"+proposal.executed+"<input type=button onclick='submitExecuteProposal("+proposalNumber+")' value=execute></td>";
                     proposalsTableBody+="<td>"+proposal.typeOfProposal+"</td>";
                     proposalsTableBody+="</tr>";
                     $("table[id=proposalsTable]").find('tbody').append(proposalsTableBody);
@@ -268,47 +265,97 @@ jQuery(document).ready(function($) {
         return time;
       }
 
-     window.submitVoteMain = function (rowIndex) {
-            loadContract(votingContractUrl, function(data){
-                votingContract = data;
+    window.submitVoteMain = function (rowIndex) {
+        loadContract(votingContractUrl, function(data){
+            votingContract = data;
 
-                var form = $('#dashboardForm');
-                let votingAddress = $('input[name=votingContract]', form).val();
-                console.log('votingAddress:', votingAddress);
-                let proposalNumber  = rowIndex;
-                let voteRadio = $('input[name=vote_'+rowIndex+']:checked');
-                if(voteRadio.length != 1){
-                    alert('No vote selected!');
+            var form = $('#dashboardForm');
+            let votingAddress = $('input[name=votingContract]', form).val();
+            console.log('votingAddress:', votingAddress);
+            let proposalNumber  = rowIndex;
+            let voteRadio = $('input[name=vote_'+rowIndex+']:checked');
+            if(voteRadio.length != 1){
+                alert('No vote selected!');
+                return;
+            }
+            let vote;
+            switch(voteRadio.val()){
+                case 'for':
+                    vote = true;
+                    break;
+                case 'against':
+                    vote = false;
+                    break;
+                default:
+                    alert('Unknown vote!');
                     return;
-                }
-                let vote;
-                switch(voteRadio.val()){
-                    case 'for':
-                        vote = true;
-                        break;
-                    case 'against':
-                        vote = false;
-                        break;
-                    default:
-                        alert('Unknown vote!');
-                        return;
-                }
-                let contractObj = web3.eth.contract(votingContract.abi);
-                let contractInstance = contractObj.at(votingAddress);
-                console.log('Calling '+votingContract.contract_name+'.vote() with parameters:\n', 
-                    proposalNumber, vote,
-                    'ABI', JSON.stringify(votingContract.abi));
-                contractInstance.vote(
-                    proposalNumber, vote,
-                    function(error, result){
-                        if(!error){
-                            console.log("Vote tx: ",result);
-                        }else{
-                            console.error(error)
-                        }
+            }
+            let contractObj = web3.eth.contract(votingContract.abi);
+            let contractInstance = contractObj.at(votingAddress);
+            console.log('Calling '+votingContract.contract_name+'.vote() with parameters:\n', 
+                proposalNumber, vote,
+                'ABI', JSON.stringify(votingContract.abi));
+            contractInstance.vote(
+                proposalNumber, vote,
+                function(error, result){
+                    if(!error){
+                        console.log("Vote tx: ",result);
+                    }else{
+                        console.error(error)
                     }
-                );
-            });
-        }
+                }
+            );
+        });
+    }
+    window.submitCountVotes = function (rowIndex) {
+        loadContract(votingContractUrl, function(data){
+            votingContract = data;
+
+            var form = $('#dashboardForm');
+            let votingAddress = $('input[name=votingContract]', form).val();
+            console.log('votingAddress:', votingAddress);
+            let proposalNumber  = rowIndex;
+            let contractObj = web3.eth.contract(votingContract.abi);
+            let contractInstance = contractObj.at(votingAddress);
+            console.log('Calling '+votingContract.contract_name+'.executeVoting() with parameters:\n', 
+                proposalNumber,
+                'ABI', JSON.stringify(votingContract.abi));
+            contractInstance.executeVoting(
+                proposalNumber,
+                function(error, result){
+                    if(!error){
+                        console.log("Execute voting tx: ",result);
+                    }else{
+                        console.error(error)
+                    }
+                }
+            );
+        });
+    }
+    window.submitExecuteProposal = function (rowIndex) {
+        loadContract(votingContractUrl, function(data){
+            votingContract = data;
+
+            var form = $('#dashboardForm');
+            let votingAddress = $('input[name=votingContract]', form).val();
+            console.log('votingAddress:', votingAddress);
+            let proposalNumber  = rowIndex;
+            let contractObj = web3.eth.contract(votingContract.abi);
+            let contractInstance = contractObj.at(votingAddress);
+            console.log('Calling '+votingContract.contract_name+'.executeProposal() with parameters:\n', 
+                proposalNumber,
+                'ABI', JSON.stringify(votingContract.abi));
+            contractInstance.executeProposal(
+                proposalNumber,
+                function(error, result){
+                    if(!error){
+                        console.log("Execute voting tx: ",result);
+                    }else{
+                        console.error(error)
+                    }
+                }
+            );
+        });
+    }
 });
 
