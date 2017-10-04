@@ -40,50 +40,6 @@ jQuery(document).ready(function($) {
         if(proposalNumber < numberOfProposals) {
             pContractInstance.getProposal(proposalNumber,function(error, result){
                 if(!error){
-                    $('#submitVote_'+proposalNumber).click(function(){
-                        loadContract(votingContractUrl, function(data){
-                            votingContract = data;
-                
-                            var form = $('#voteForProposalForm');
-                            let votingAddress = $('input[name=votingAddress]', form).val();
-                            let proposalNumber      = 0;
-                            let voteRadio = $('input[name=vote]:checked');
-                            if(voteRadio.length != 1){
-                                alert('No vote selected!');
-                                return;
-                            }
-                            let vote;
-                            switch(voteRadio.val()){
-                                case 'for':
-                                    vote = true;
-                                    break;
-                                case 'against':
-                                    vote = false;
-                                    break;
-                                default:
-                                    alert('Unknown vote!');
-                                    return;
-                            }
-                
-                            let contractObj = web3.eth.contract(votingContract.abi);
-                            let contractInstance = contractObj.at(votingAddress);
-                
-                            console.log('Calling '+votingContract.contract_name+'.vote() with parameters:\n', 
-                                proposalNumber, vote,
-                                'ABI', JSON.stringify(votingContract.abi));
-                            contractInstance.vote(
-                                proposalNumber, vote,
-                                function(error, result){
-                                    if(!error){
-                                        console.log("Vote tx: ",result);
-                                        $('input[name=publishedTx]',form).val(result);
-                                    }else{
-                                        console.error(error)
-                                    }
-                                }
-                            );
-                        });
-                    });
                     var proposal = {};
                     proposal.recipient = result[0];
                     proposal.amount = result[1].toString();
