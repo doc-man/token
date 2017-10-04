@@ -172,10 +172,6 @@ jQuery(document).ready(function($) {
                 );
             });
         });
-
-
-
-
         $('#changeVotingRules').click(function(){
             loadContract(votingContractUrl, function(data){
                 votingContract = data;
@@ -198,7 +194,7 @@ jQuery(document).ready(function($) {
                         if(!error){
                             console.log("Execute voting tx: ",result);
                             $('input[name=publishedTx]',form).val(result);
-                        }else{
+                        } else {
                             console.error(error)
                         }
                     }

@@ -1,14 +1,17 @@
 var $ = jQuery;
 jQuery(document).ready(function($) {
+    
+    var tokenContractUrl       = '../../build/contracts/HealthToken.json';
+    var foundationContractUrl  = '../../build/contracts/FoundationContract.json';
+    var votingContractUrl      = '../../build/contracts/SimpleVoting.json';
 
     let web3;
-    let foundation  = "0x3322f65041ee98ca3b069d76d2171de4032173d6";    
+    let foundation  = "0xfc7acfda96972316725512b6109441621ebd2d28";    
     let votingContractAddress; // this value is retrieved from foundation
 
     function loadContract(url, callback){
         $.ajax(url,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(callback);
     }
-
 
    // Ref: https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#partly_sunny-web3---ethereum-browser-environment-check     
    window.addEventListener('load', function() {
@@ -29,15 +32,98 @@ jQuery(document).ready(function($) {
         startApp();
     
     });    
-   
-    function submitVote(index) {
-        console.log("Submit vote");
+   $('#proposalsTable').on('click', function(){
+       console.log('click');
+   });
+    
+    var proposalRowCount = 0;
+    function creatProposalsTableRow(pContractInstance, numberOfProposals) {
+        let proposalNumber = proposalRowCount;
+        console.log("call creatProposalsTableRow", proposalNumber, numberOfProposals);
+        if(proposalNumber < numberOfProposals) {
+            pContractInstance.getProposal(proposalNumber,function(error, result){
+                if(!error){
+                    $('#submitVote_'+proposalNumber).click(function(){
+                        loadContract(votingContractUrl, function(data){
+                            votingContract = data;
+                
+                            var form = $('#voteForProposalForm');
+                            let votingAddress = $('input[name=votingAddress]', form).val();
+                            let proposalNumber      = 0;
+                            let voteRadio = $('input[name=vote]:checked');
+                            if(voteRadio.length != 1){
+                                alert('No vote selected!');
+                                return;
+                            }
+                            let vote;
+                            switch(voteRadio.val()){
+                                case 'for':
+                                    vote = true;
+                                    break;
+                                case 'against':
+                                    vote = false;
+                                    break;
+                                default:
+                                    alert('Unknown vote!');
+                                    return;
+                            }
+                
+                            let contractObj = web3.eth.contract(votingContract.abi);
+                            let contractInstance = contractObj.at(votingAddress);
+                
+                            console.log('Calling '+votingContract.contract_name+'.vote() with parameters:\n', 
+                                proposalNumber, vote,
+                                'ABI', JSON.stringify(votingContract.abi));
+                            contractInstance.vote(
+                                proposalNumber, vote,
+                                function(error, result){
+                                    if(!error){
+                                        console.log("Vote tx: ",result);
+                                        $('input[name=publishedTx]',form).val(result);
+                                    }else{
+                                        console.error(error)
+                                    }
+                                }
+                            );
+                        });
+                    });
+                    var proposal = {};
+                    proposal.recipient = result[0];
+                    proposal.amount = result[1].toString();
+                    proposal.description = result[2];
+                    proposal.votingDeadline = result[3];
+                    proposal.numberOfVotes = result[4];
+                    proposal.executed = result[5];
+                    proposal.proposalPassed = result[6];
+                    proposal.typeOfProposal = result[7];
+
+                    let proposalsTableBody ="<tr>";
+                    proposalsTableBody+="<td>"+proposalNumber+"</td>";                                            
+                    proposalsTableBody+="<td>"+proposal.recipient+"</td>";
+                    let amount = web3.fromWei(proposal.amount, 'ether');
+                    proposalsTableBody+="<td>"+amount+"</td>";
+                    proposalsTableBody+="<td>"+proposal.description+"</td>";
+                    var date = new Date(proposal.votingDeadline*1000);
+                    var hours = date.getHours();
+                    var minutes = "0" + date.getMinutes();
+                    var seconds = "0" + date.getSeconds();
+                    var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+                    proposalsTableBody+="<td>"+timeConverter(proposal.votingDeadline)+"</td>";
+                    proposalsTableBody+="<td>"+proposal.numberOfVotes+"<label><input type='radio' name='vote_"+proposalNumber+"' value='for'>For</label><label><input type='radio' name='vote_"+proposalNumber+"' value='against'>Against</label></div><input type='button' id='submitVote_"+proposalNumber+"' onclick='submitVoteMain("+proposalNumber+")' value='Submit Vote'></td>";
+                    proposalsTableBody+="<td>"+proposal.proposalPassed+"<input type=button value='count votes'></td></td>";
+                    proposalsTableBody+="<td>"+proposal.executed+"<input type=submit value=execute></td>";
+                    proposalsTableBody+="<td>"+proposal.typeOfProposal+"</td>";
+                    proposalsTableBody+="</tr>";
+                    $("table[id=proposalsTable]").find('tbody').append(proposalsTableBody);
+                } else {
+                    console.log('Can\'t find proposals', error);
+                }
+                proposalRowCount ++;
+                creatProposalsTableRow(pContractInstance, numberOfProposals);
+            });
+        }
     }
     function startApp(){
-
-        const tokenContractUrl       = '../../build/contracts/HealthToken.json';
-        const foundationContractUrl  = '../../build/contracts/FoundationContract.json';
-        const votingContractUrl      = '../../build/contracts/SimpleVoting.json';
 
         let tokenContract;
         let foundationContract;
@@ -107,117 +193,41 @@ jQuery(document).ready(function($) {
                                 console.log('Can\'t find debating Period In Seconds', error);
                             }
                         });
-
-                        let proposalsTable = "<table border=1><th>Proposal ID</th><th>Recipient</th><th>Amount (HLT/Ether)</th><th>Description</th><th>Voting Deadline</th><th># of votes</th><th>Proposal passed</th><th>Executed</th><th>Type of proposal</th>";                        
+      
                         let numberOfProposals = 0;
                         let proposals = new Array();
                         pContractInstance.getProposalsCount(function(error, result){
                             if(!error){
                                 $('input[name=numProposals]','#dashboardForm').val(result);
                                 numberOfProposals = $('input[name=numProposals]','#dashboardForm').val();
+                                console.log(numberOfProposals);
                                 // inside the for loop I am calling a async function. For loop will funish running immediately. While all your asynchronous operations are started. 
                                 // Ref: https://stackoverflow.com/questions/11488014/asynchronous-process-inside-a-javascript-for-loop
                                 // let proposalNumber = 0;
-                                for (let proposalNumber = 0; proposalNumber < numberOfProposals; proposalNumber ++) { 
-                                    console.log(proposalNumber);
-                                    pContractInstance.getProposal(proposalNumber,function(error, result){
-                                        if(!error){
-                                            console.log('#submitVote_'+proposalNumber);
-                                            $('#submitVote_'+proposalNumber).click(function(){
-                                                loadContract(votingContractUrl, function(data){
-                                                    votingContract = data;
-                                        
-                                                    var form = $('#voteForProposalForm');
-                                                    let votingAddress = $('input[name=votingAddress]', form).val();
-                                                    let proposalNumber      = 0;
-                                                    let voteRadio = $('input[name=vote]:checked');
-                                                    if(voteRadio.length != 1){
-                                                        alert('No vote selected!');
-                                                        return;
-                                                    }
-                                                    let vote;
-                                                    switch(voteRadio.val()){
-                                                        case 'for':
-                                                            vote = true;
-                                                            break;
-                                                        case 'against':
-                                                            vote = false;
-                                                            break;
-                                                        default:
-                                                            alert('Unknown vote!');
-                                                            return;
-                                                    }
-                                        
-                                                    let contractObj = web3.eth.contract(votingContract.abi);
-                                                    let contractInstance = contractObj.at(votingAddress);
-                                        
-                                                    console.log('Calling '+votingContract.contract_name+'.vote() with parameters:\n', 
-                                                        proposalNumber, vote,
-                                                        'ABI', JSON.stringify(votingContract.abi));
-                                                    contractInstance.vote(
-                                                        proposalNumber, vote,
-                                                        function(error, result){
-                                                            if(!error){
-                                                                console.log("Vote tx: ",result);
-                                                                $('input[name=publishedTx]',form).val(result);
-                                                            }else{
-                                                                console.error(error)
-                                                            }
-                                                        }
-                                                    );
-                                                });
-                                            });
-                                            var proposal = {};
-                                            proposal["recipient"] = result[0];
-                                            proposal["amount"] = result[1].toString();
-                                            proposal["description"] = result[2];
-                                            proposal["votingDeadline"] = result[3];
-                                            proposal["numberOfVotes"] = result[4];
-                                            proposal["executed"] = result[5];
-                                            proposal["proposalPassed"] = result[6];
-                                            proposal["typeOfProposal"] = result[7];
-                                            proposals.push(proposal);       
-                                            console.log(proposals);
-                                            proposalsTable+="<tr>";
-                                            proposalsTable+="<td>"+proposalNumber+"</td>";                                            
-                                            proposalsTable+="<td>"+proposals[proposalNumber].recipient+"</td>";
-                                            let amount = web3.fromWei(proposals[proposalNumber].amount, 'ether');
-                                            proposalsTable+="<td>"+amount+"</td>";
-                                            proposalsTable+="<td>"+proposals[proposalNumber].description+"</td>";
-                                            // ref: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript    
-                                            var date = new Date(proposals[proposalNumber].votingDeadline*1000);
-                                            var hours = date.getHours();
-                                            var minutes = "0" + date.getMinutes();
-                                            var seconds = "0" + date.getSeconds();
-                                            var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-                                            proposalsTable+="<td>"+timeConverter(proposals[proposalNumber].votingDeadline)+"</td>";
-                                            proposalsTable+="<td>"+proposals[proposalNumber].numberOfVotes+"<label><input type='radio' name='vote_"+proposalNumber+"' value='for'>For</label><label><input type='radio' name='vote_"+proposalNumber+"' value='against'>Against</label></div><input type='button' id='submitVote_"+proposalNumber+"' value='Submit Vote'></td>";
-                                            proposalsTable+="<td>"+proposals[proposalNumber].proposalPassed+"<input type=submit value='count votes'></td></td>";
-                                            proposalsTable+="<td>"+proposals[proposalNumber].executed+"<input type=submit value=execute></td>";
-                                            proposalsTable+="<td>"+proposals[proposalNumber].typeOfProposal+"</td>";
-                                            proposalsTable+="</tr>";
-                                            console.log(proposalsTable);
-                                            // FIXME: If there are 5 proposals this will get printed 5 times.
-                                            $("div[id=proposalsTable]").html(proposalsTable);                                                            
-                                        }else{
-                                            console.log('Can\'t find proposals', error);
-                                        }
-                                        
-                                        // proposalNumber ++;
-                                    });
-                                }// end of for loop                                    
-
-                            }else{
+                                
+                                // numberOfProposals = 1;
+                                if(numberOfProposals > 0) {
+                                    // proposalsTable += "<script type='text/javascript' src='status.js'></script>";
+                                    // let proposalsTable = "<script type='text/javascript' src='status.js'></script><script>"
+                                    // + "function submitVote(proposalNumber) {"
+                                    // +    "console.log('call fn js', proposalNumber);"
+                                    // +    "submitVoteMain(proposalNumber);"
+                                    // + "}"
+                                    // +"</script>";
+                                    
+                                    let proposalsTable = "<table id='proposalsTable' border=1><thead><tr><th>Proposal ID</th><th>Recipient</th><th>Amount (HLT/Ether)</th><th>Description</th><th>Voting Deadline</th><th># of votes</th><th>Proposal passed</th><th>Executed</th><th>Type of proposal</th></tr></thead><tbody id='proposalsTableBody'></tbody>";
+                                    proposalsTable += "</table>";
+                                    $("div[id=viewProposalsTable]").html(proposalsTable);
+                                    creatProposalsTableRow(pContractInstance, numberOfProposals);
+                                }     
+                            } else {
                                 console.log('Can\'t find numProposals', error);
                             }
                         });
                     });
-                }else{
+                } else {
                     console.log('Can\'t find voting contract address', error);
-                }
-                proposalsTable+="</table>";
-                console.log(proposalsTable);
-                $("div[id=proposalsTable]").html(proposalsTable);                
+                }              
             });
         });
     };
@@ -257,4 +267,48 @@ jQuery(document).ready(function($) {
         var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
         return time;
       }
+
+     window.submitVoteMain = function (rowIndex) {
+            loadContract(votingContractUrl, function(data){
+                votingContract = data;
+
+                var form = $('#dashboardForm');
+                let votingAddress = $('input[name=votingContract]', form).val();
+                console.log('votingAddress:', votingAddress);
+                let proposalNumber  = rowIndex;
+                let voteRadio = $('input[name=vote_'+rowIndex+']:checked');
+                if(voteRadio.length != 1){
+                    alert('No vote selected!');
+                    return;
+                }
+                let vote;
+                switch(voteRadio.val()){
+                    case 'for':
+                        vote = true;
+                        break;
+                    case 'against':
+                        vote = false;
+                        break;
+                    default:
+                        alert('Unknown vote!');
+                        return;
+                }
+                let contractObj = web3.eth.contract(votingContract.abi);
+                let contractInstance = contractObj.at(votingAddress);
+                console.log('Calling '+votingContract.contract_name+'.vote() with parameters:\n', 
+                    proposalNumber, vote,
+                    'ABI', JSON.stringify(votingContract.abi));
+                contractInstance.vote(
+                    proposalNumber, vote,
+                    function(error, result){
+                        if(!error){
+                            console.log("Vote tx: ",result);
+                        }else{
+                            console.error(error)
+                        }
+                    }
+                );
+            });
+        }
 });
+
