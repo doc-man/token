@@ -168,7 +168,7 @@ jQuery(document).ready(function($) {
                                     // + "}"
                                     // +"</script>";
                                     
-                                    let proposalsTable = "<table id='proposalsTable' border=1><thead><tr><th>Proposal ID</th><th>Recipient</th><th>Amount (HLT/Ether)</th><th>Description</th><th>Voting Deadline</th><th># of votes</th><th>Proposal passed</th><th>Executed</th><th>Type of proposal</th></tr></thead><tbody id='proposalsTableBody'></tbody>";
+                                    let proposalsTable = "<table id='proposalsTable' border=1><thead style='background-color: #ececec;'><tr><th>Proposal ID</th><th>Recipient</th><th>Amount (HLT/Ether)</th><th>Description</th><th>Voting Deadline</th><th># of votes</th><th>Proposal passed</th><th>Executed</th><th>Type of proposal</th></tr></thead><tbody id='proposalsTableBody'></tbody>";
                                     proposalsTable += "</table>";
                                     $("div[id=viewProposalsTable]").html(proposalsTable);
                                     creatProposalsTableRow(pContractInstance, numberOfProposals);
