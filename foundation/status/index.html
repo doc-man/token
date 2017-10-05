@@ -25,10 +25,18 @@
         </td></tr>
         <tr><td>6. Minimum Quorum: </td><td><input type="text" readonly name="minimumQuorum" value=""></td></tr>
         <tr><td>7. Debating period in seconds: </td><td><input type="text" readonly name="debatingPeriodInSeconds" value=""></td></tr>
-        <tr><td>8. Number of proposals to the foundation:</td><td><input type="text" readonly name="numProposals" value=""></td></tr>
+        <tr><td>8. Number of proposals to the foundation:</td><td><input type="text" readonly name="numProposals" value=""><input type="button" class="btn btn-primary" id="creatNewProposal" value="Creat new proposal"></td></tr>
     </table>
-    <div id=viewProposalsTable></div>
 </form>
+    <div id="proposalFormDiv" style="display:none"> <!--style="display:none"-->
+        <form id="submitTokenProposalForm"  class="contractForm">
+            <label style="display: block;">beneficiary address: <input type="text" name="beneficiary" value="" style="border: 1px solid rgb(140, 140, 140);"></label>
+            <label style="display: block;">Amount in HLT: <input type="text" name="amount" value="" style="border: 1px solid rgb(140, 140, 140);"></label>
+            <label style="display: block;">description: <input type="text" name="description" value="" style="border: 1px solid rgb(140, 140, 140);"></label>
+            <input type="button" id="submitTokenProposal" value="Submit Proposal" class="btn btn-success" >
+        </form>
+    </div>
+    <div id=viewProposalsTable></div>
 
 </body>
 </html>

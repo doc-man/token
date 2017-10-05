@@ -313,5 +313,46 @@ jQuery(document).ready(function($) {
             );
         });
     }
+    $('#creatNewProposal').click(function(){
+        var x = document.getElementById("proposalFormDiv");
+        x.style.display = "block";
+        var pBtn = document.getElementById("creatNewProposal");
+        pBtn.style.display = "none";
+    });
+    
+    $('#submitTokenProposal').click(function(){
+        loadContract(votingContractUrl, function(data){
+            votingContract = data;
+            var mainForm = $('#dashboardForm');
+            let votingAddress = $('input[name=votingContract]', mainForm).val();
+            console.log('votingAddress:', votingAddress);
+            var form = $('#submitTokenProposalForm');
+            let beneficiary = $('input[name=beneficiary]', form).val();
+            let amount = web3.toWei($('input[name=amount]', form).val(), 'ether');
+            let description = $('input[name=description]', form).val();
+
+            let contractObj = web3.eth.contract(votingContract.abi);
+            let contractInstance = contractObj.at(votingAddress);
+            console.log('Calling '+votingContract.contract_name+'.newTokenProposal() with parameters:\n', 
+                beneficiary, amount, description,
+                'ABI', JSON.stringify(votingContract.abi));
+
+            contractInstance.newTokenProposal(
+                beneficiary, amount, description,
+                function(error, result){
+                    if(!error){
+                        console.log("Proposal tx: ",result);
+                        var x = document.getElementById("proposalFormDiv");
+                        x.style.display = "none";
+                        var pBtn = document.getElementById("creatNewProposal");
+                        pBtn.style.display = "inline";
+                        // $('input[name=publishedTx]',form).val(result);
+                    }else{
+                        console.error(error)
+                    }
+                }
+            );
+        });
+    });
 });
 
