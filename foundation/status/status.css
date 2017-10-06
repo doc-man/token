@@ -50,3 +50,40 @@ input[type=text] {
     background-color: #449d44;
     border-color: #398439;
 }
+.btn-default {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+}
+.btn-default:hover {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+.btn-danger {
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d43f3a;
+}
+.btn-danger:hover {
+    color: #fff;
+    background-color: #c9302c;
+    border-color: #ac2925;
+}
+.smrt-input {
+    border: 1px solid rgb(177, 177, 177) !important;
+    font-size: 15px !important;
+    width: 30% !important;
+    color: #3c3b3a !important;
+}
+.dataTables_filter {
+    width: 50%;
+}
+.dataTables_filter input {
+    width: 90%;
+}
+.dataTables_filter label {
+    border: 1px solid #585858;
+    border-radius: 5px;
+    background-color: #bdf1df;
+}

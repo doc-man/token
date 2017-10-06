@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link rel='stylesheet' href='./status.css' type='text/css'/>
+    <link rel='stylesheet' href='../../table/dataTables.min.css' type='text/css'/>
     <script type="text/javascript" src="../../web3.min.js"></script>
     <script type="text/javascript" src="status.js"></script>
+    <script type="text/javascript" src="../../table/dataTables.min.js"></script>
 </head>
 <body>
 <h1>HCF Dashboard</h1>
@@ -24,18 +26,32 @@
             <input type="text" readonly name="votingContract" value="">
         </td></tr>
         <tr><td>6. Minimum Quorum: </td><td><input type="text" readonly name="minimumQuorum" value=""></td></tr>
-        <tr><td>7. Debating period in seconds: </td><td><input type="text" readonly name="debatingPeriodInSeconds" value=""></td></tr>
-        <tr><td>8. Number of proposals to the foundation:</td><td><input type="text" readonly name="numProposals" value=""><input type="button" class="btn btn-primary" id="creatNewProposal" value="Creat new proposal"></td></tr>
+        <tr><td>7. Debating period in seconds: </td><td>
+            <input type="text" readonly name="debatingPeriodInSeconds" value="" style="width:15%">
+            <input type="button" class="btn btn-primary" id="changeDebatingPeriodBtn" value="Change debating period" style="display:none">
+            <div id="changeDebatingPeriodFormDiv" style="display:none"> <!--style="display:none"-->
+                <label style="display: block;"><strong>Votes number:</strong> <input type="text" name="votesNumber" value="" class="smrt-input"></label>
+                <label style="display: block;"><strong>Voting deadline:</strong> <input type="text" name="votingDeadline" value="" class="smrt-input" placeholder="seconds"></label>
+                <input type="button" id="submitChangeVotingRules" value="Submit" class="btn btn-success" >
+                <input type="button" id="cancleChangeVotingRules" value="Cancle" class="btn btn-danger" >
+            </div>
+        </td></tr>
+        <tr><td>8. Number of proposals to the foundation:</td>
+            <td>
+                <input type="text" readonly name="numProposals" value="" style="width:15%">
+                <input type="button" class="btn btn-primary" id="creatNewProposal" value="Creat new proposal" style="display:none">
+                
+                <div id="proposalFormDiv" style="display:none"> <!--style="display:none"-->
+                    <label style="display: block;"><strong>Beneficiary address:</strong> <input type="text" name="beneficiary" value="" class="smrt-input"></label>
+                    <label style="display: block;"><strong>Amount in HLT:</strong> <input type="text" name="amount" value="" class="smrt-input"></label>
+                    <label style="display: block;"><strong>Description:</strong> <input type="text" name="description" value="" class="smrt-input"></label>
+                    <input type="button" id="submitTokenProposal" value="Submit Proposal" class="btn btn-success" >
+                    <input type="button" id="cancleCreatNewProposal" value="Cancle" class="btn btn-danger" >
+                </div>
+            </td>
+        </tr>
     </table>
 </form>
-    <div id="proposalFormDiv" style="display:none"> <!--style="display:none"-->
-        <form id="submitTokenProposalForm"  class="contractForm">
-            <label style="display: block;">beneficiary address: <input type="text" name="beneficiary" value="" style="border: 1px solid rgb(140, 140, 140);"></label>
-            <label style="display: block;">Amount in HLT: <input type="text" name="amount" value="" style="border: 1px solid rgb(140, 140, 140);"></label>
-            <label style="display: block;">description: <input type="text" name="description" value="" style="border: 1px solid rgb(140, 140, 140);"></label>
-            <input type="button" id="submitTokenProposal" value="Submit Proposal" class="btn btn-success" >
-        </form>
-    </div>
     <div id=viewProposalsTable></div>
 
 </body>

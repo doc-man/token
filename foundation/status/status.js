@@ -74,6 +74,16 @@ jQuery(document).ready(function($) {
                 proposalRowCount ++;
                 creatProposalsTableRow(pContractInstance, numberOfProposals);
             });
+        } else {
+            
+            $('#proposalsTable')
+                .addClass( 'nowrap' )
+                .dataTable( {
+                    responsive: true,
+                    columnDefs: [
+                        { targets: [-1, -3], className: 'dt-body-right' }
+                    ]
+                } );
         }
     }
     function startApp(){
@@ -142,6 +152,8 @@ jQuery(document).ready(function($) {
                         pContractInstance.debatingPeriodInSeconds(function(error, result){
                             if(!error){
                                 $('input[name=debatingPeriodInSeconds]','#dashboardForm').val(result);
+                                var dBtn = document.getElementById("changeDebatingPeriodBtn");
+                                dBtn.style.display = "inline";
                             }else{
                                 console.log('Can\'t find debating Period In Seconds', error);
                             }
@@ -152,6 +164,8 @@ jQuery(document).ready(function($) {
                         pContractInstance.getProposalsCount(function(error, result){
                             if(!error){
                                 $('input[name=numProposals]','#dashboardForm').val(result);
+                                var pBtn = document.getElementById("creatNewProposal");
+                                pBtn.style.display = "inline";
                                 numberOfProposals = $('input[name=numProposals]','#dashboardForm').val();
                                 console.log(numberOfProposals);
                                 // inside the for loop I am calling a async function. For loop will funish running immediately. While all your asynchronous operations are started. 
@@ -168,9 +182,20 @@ jQuery(document).ready(function($) {
                                     // + "}"
                                     // +"</script>";
                                     
-                                    let proposalsTable = "<table id='proposalsTable' border=1><thead style='background-color: #ececec;'><tr><th>Proposal ID</th><th>Recipient</th><th>Amount (HLT/Ether)</th><th>Description</th><th>Voting Deadline</th><th># of votes</th><th>Proposal passed</th><th>Executed</th><th>Type of proposal</th></tr></thead><tbody id='proposalsTableBody'></tbody>";
+                                    let proposalsTable = "<table id='proposalsTable' class='display table-sort-show-search-count'><thead style='background-color: #ececec;'><tr>"
+                                        + "<th>Proposal ID</th>"
+                                        + "<th>Recipient</th>"
+                                        + "<th>Amount (HLT/Ether)</th>"
+                                        + "<th>Description</th>"
+                                        + "<th>Voting Deadline</th>"
+                                        + "<th># of votes</th>"
+                                        + "<th>Proposal passed</th>"
+                                        + "<th>Executed</th>"
+                                        + "<th>Type of proposal</th>"
+                                    + "</tr></thead><tbody id='proposalsTableBody'></tbody>";
                                     proposalsTable += "</table>";
                                     $("div[id=viewProposalsTable]").html(proposalsTable);
+                                    
                                     creatProposalsTableRow(pContractInstance, numberOfProposals);
                                 }     
                             } else {
@@ -319,17 +344,22 @@ jQuery(document).ready(function($) {
         var pBtn = document.getElementById("creatNewProposal");
         pBtn.style.display = "none";
     });
-    
+    $('#cancleCreatNewProposal').click(function(){
+        var x = document.getElementById("proposalFormDiv");
+        x.style.display = "none";
+        var pBtn = document.getElementById("creatNewProposal");
+        pBtn.style.display = "inline";
+    });
     $('#submitTokenProposal').click(function(){
         loadContract(votingContractUrl, function(data){
             votingContract = data;
             var mainForm = $('#dashboardForm');
             let votingAddress = $('input[name=votingContract]', mainForm).val();
             console.log('votingAddress:', votingAddress);
-            var form = $('#submitTokenProposalForm');
-            let beneficiary = $('input[name=beneficiary]', form).val();
-            let amount = web3.toWei($('input[name=amount]', form).val(), 'ether');
-            let description = $('input[name=description]', form).val();
+            
+            let beneficiary = $('input[name=beneficiary]').val();
+            let amount = web3.toWei($('input[name=amount]').val(), 'ether');
+            let description = $('input[name=description]').val();
 
             let contractObj = web3.eth.contract(votingContract.abi);
             let contractInstance = contractObj.at(votingAddress);
@@ -348,6 +378,50 @@ jQuery(document).ready(function($) {
                         pBtn.style.display = "inline";
                         // $('input[name=publishedTx]',form).val(result);
                     }else{
+                        console.error(error)
+                    }
+                }
+            );
+        });
+    });
+    
+    $('#changeDebatingPeriodBtn').click(function(){
+        var x = document.getElementById("changeDebatingPeriodFormDiv");
+        x.style.display = "block";
+        var dBtn = document.getElementById("changeDebatingPeriodBtn");
+        dBtn.style.display = "none";
+    });
+    $('#cancleChangeVotingRules').click(function(){
+        var x = document.getElementById("changeDebatingPeriodFormDiv");
+        x.style.display = "none";
+        var dBtn = document.getElementById("changeDebatingPeriodBtn");
+        dBtn.style.display = "inline";
+    });
+    $('#submitChangeVotingRules').click(function(){
+        loadContract(votingContractUrl, function(data){
+            votingContract = data;
+            var mainForm = $('#dashboardForm');
+            let votingAddress = $('input[name=votingContract]', mainForm).val();
+            console.log('votingAddress:', votingAddress);
+            
+            let votesNumber = $('input[name=votesNumber]').val();
+            let votingDeadline = $('input[name=votingDeadline]').val();
+
+            let contractObj = web3.eth.contract(votingContract.abi);
+            let contractInstance = contractObj.at(votingAddress);
+            console.log('Calling '+votingContract.contract_name+'.changeVotingRules() with parameters:\n', 
+                    votesNumber, votingDeadline,
+                    'ABI', JSON.stringify(votingContract.abi));
+            contractInstance.changeVotingRules(
+                votesNumber, votingDeadline,
+                function(error, result){
+                    if(!error){
+                        console.log("Execute voting tx: ",result);
+                        var x = document.getElementById("changeDebatingPeriodFormDiv");
+                        x.style.display = "none";
+                        var dBtn = document.getElementById("changeDebatingPeriodBtn");
+                        dBtn.style.display = "inline";
+                    } else {
                         console.error(error)
                     }
                 }
