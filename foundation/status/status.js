@@ -63,18 +63,26 @@ jQuery(document).ready(function($) {
                     var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
                     proposalsTableBody+="<td>"+timeConverter(proposal.votingDeadline)+"</td>";
                     proposalsTableBody+="<td>"+proposal.numberOfVotes+"<label><input type='radio' name='vote_"+proposalNumber+"' value='for'>For</label><label><input type='radio' name='vote_"+proposalNumber+"' value='against'>Against</label></div><input type='button' id='submitVote_"+proposalNumber+"' onclick='submitVoteMain("+proposalNumber+")' value='Submit Vote'></td>";
-                    var submitCountVotesBtnDisplay = 'none';
-                    if(proposal.numberOfVotes != 0 && proposal.proposalPassed != true) submitCountVotesBtnDisplay = '';
-                    var submitCountVotesSuccessDisplay = 'none';
-                    if(proposal.proposalPassed == true) submitCountVotesSuccessDisplay = '';
-                    proposalsTableBody+="<td>"+"<span style='display:"+submitCountVotesSuccessDisplay+"' class='success-print'>Success</span>"+"<input type=button id='submitCountVotesBtn' onclick='submitCountVotes("+proposalNumber+")' value='count votes' style='display:"+submitCountVotesBtnDisplay+"'></td></td>";
+                    if(proposal.numberOfVotes != 0 && proposal.proposalPassed != true) {
+                        proposalsTableBody+="<td>"+"<input type=button id='submitCountVotesBtn' onclick='submitCountVotes("+proposalNumber+")' value='count votes'></td>";
+                    } else if(proposal.proposalPassed == true) {
+                        proposalsTableBody+="<td>"+"<span class='success-print'>Success</span>"+"</td>";
+                    } else {
+                        proposalsTableBody+="<td>"+"</td>";
+                    }
+                    if(proposal.proposalPassed == true && proposal.executed != true) {
+                        proposalsTableBody+="<td>"+"<input type=button id='submitExecuteProposalBtn' onclick='submitExecuteProposal("+proposalNumber+")' value=execute ></td>";
+                    } else if(proposal.executed == true){
+                        proposalsTableBody+="<td>"+"<span class='success-print'>Success</span>"+"</td>";
+                    } else {
+                        proposalsTableBody+="<td>"+"</td>";
+                    }
+                    if(proposal.typeOfProposal) {
+                        proposalsTableBody+="<td>"+proposal.typeOfProposal+"</td>";
+                    } else {
+                        proposalsTableBody+="<td>"+"</td>";
+                    }
                     
-                    var submitExecuteProposalBtnDisplay = 'none';
-                    if(proposal.proposalPassed == true && proposal.executed != true) submitExecuteProposalBtnDisplay = '';
-                    var submitExecuteProposalSuccessDisplay = 'none';
-                    if(proposal.executed == true) submitExecuteProposalSuccessDisplay = '';
-                    proposalsTableBody+="<td>"+"<span style='display:"+submitExecuteProposalSuccessDisplay+"' class='success-print'>Success</span>"+"<input type=button id='submitExecuteProposalBtn' onclick='submitExecuteProposal("+proposalNumber+")' value=execute style='display:"+submitExecuteProposalBtnDisplay+"'></td>";
-                    proposalsTableBody+="<td>"+proposal.typeOfProposal+"</td>";
                     proposalsTableBody+="</tr>";
                     $("table[id=proposalsTable]").find('tbody').append(proposalsTableBody);
                 } else {
