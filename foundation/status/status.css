@@ -87,3 +87,11 @@ input[type=text] {
     border-radius: 5px;
     background-color: #bdf1df;
 }
+.success-print {
+    border: 1px solid #30a965;
+    background-color: #7cd2a2;
+    border-radius: 5px;
+    padding: 0px 8px;
+    color: #ffffff;
+    cursor: default;
+}

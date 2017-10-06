@@ -63,8 +63,17 @@ jQuery(document).ready(function($) {
                     var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
                     proposalsTableBody+="<td>"+timeConverter(proposal.votingDeadline)+"</td>";
                     proposalsTableBody+="<td>"+proposal.numberOfVotes+"<label><input type='radio' name='vote_"+proposalNumber+"' value='for'>For</label><label><input type='radio' name='vote_"+proposalNumber+"' value='against'>Against</label></div><input type='button' id='submitVote_"+proposalNumber+"' onclick='submitVoteMain("+proposalNumber+")' value='Submit Vote'></td>";
-                    proposalsTableBody+="<td>"+proposal.proposalPassed+"<input type=button onclick='submitCountVotes("+proposalNumber+")' value='count votes'></td></td>";
-                    proposalsTableBody+="<td>"+proposal.executed+"<input type=button onclick='submitExecuteProposal("+proposalNumber+")' value=execute></td>";
+                    var submitCountVotesBtnDisplay = 'none';
+                    if(proposal.numberOfVotes != 0 && proposal.proposalPassed != true) submitCountVotesBtnDisplay = '';
+                    var submitCountVotesSuccessDisplay = 'none';
+                    if(proposal.proposalPassed == true) submitCountVotesSuccessDisplay = '';
+                    proposalsTableBody+="<td>"+"<span style='display:"+submitCountVotesSuccessDisplay+"' class='success-print'>Success</span>"+"<input type=button id='submitCountVotesBtn' onclick='submitCountVotes("+proposalNumber+")' value='count votes' style='display:"+submitCountVotesBtnDisplay+"'></td></td>";
+                    
+                    var submitExecuteProposalBtnDisplay = 'none';
+                    if(proposal.proposalPassed == true && proposal.executed != true) submitExecuteProposalBtnDisplay = '';
+                    var submitExecuteProposalSuccessDisplay = 'none';
+                    if(proposal.executed == true) submitExecuteProposalSuccessDisplay = '';
+                    proposalsTableBody+="<td>"+"<span style='display:"+submitExecuteProposalSuccessDisplay+"' class='success-print'>Success</span>"+"<input type=button id='submitExecuteProposalBtn' onclick='submitExecuteProposal("+proposalNumber+")' value=execute style='display:"+submitExecuteProposalBtnDisplay+"'></td>";
                     proposalsTableBody+="<td>"+proposal.typeOfProposal+"</td>";
                     proposalsTableBody+="</tr>";
                     $("table[id=proposalsTable]").find('tbody').append(proposalsTableBody);
@@ -182,7 +191,7 @@ jQuery(document).ready(function($) {
                                     // + "}"
                                     // +"</script>";
                                     
-                                    let proposalsTable = "<table id='proposalsTable' class='display table-sort-show-search-count'><thead style='background-color: #ececec;'><tr>"
+                                    let proposalsTable = "<table id='proposalsTable' class='display table-sort-show-search-count'><thead style='background-color: #bdbdbd;'><tr>"
                                         + "<th>Proposal ID</th>"
                                         + "<th>Recipient</th>"
                                         + "<th>Amount (HLT/Ether)</th>"
