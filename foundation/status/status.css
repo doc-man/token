@@ -95,3 +95,16 @@ input[type=text] {
     color: #ffffff;
     cursor: default;
 }
+.header {
+    color: black;
+    border-bottom: 1px solid #9e9e9e;
+    text-shadow: 3px 3px 5px #777777;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000;
+}
+table.dataTable span.highlight {
+  background-color: #FFFF88;
+}
+
+	
+		

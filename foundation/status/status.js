@@ -92,11 +92,11 @@ jQuery(document).ready(function($) {
                 creatProposalsTableRow(pContractInstance, numberOfProposals);
             });
         } else {
-            
             $('#proposalsTable')
                 .addClass( 'nowrap' )
                 .dataTable( {
                     responsive: true,
+                    searchHighlight: true,
                     columnDefs: [
                         { targets: [-1, -3], className: 'dt-body-right' }
                     ]
