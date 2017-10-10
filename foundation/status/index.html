@@ -14,6 +14,48 @@
     <script type="text/javascript" src="../../table/dataTables.min.js"></script>
     <script type="text/javascript" src="../../table/highlight.js"></script>
     <script type="text/javascript" src="../../table/searchHighlight.min.js"></script>
+
+    <!--<script>
+        window.onload = function () {
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+            exportEnabled: true,
+            animationEnabled: true,
+            title:{
+                text: "Token distribution"
+            },
+            legend:{
+                cursor: "pointer",
+                itemclick: explodePie
+            },
+            data: [{
+                type: "pie",
+                showInLegend: true,
+                toolTipContent: "{name}: <strong>{y}%</strong>",
+                indexLabel: "{name} - {y}%",
+                dataPoints: [
+                    { y: 16, name: "Test 1", exploded: true },
+                    { y: 20, name: "Test 2" },
+                    { y: 5, name: "Test 3", exploded: true  },
+                    { y: 33, name: "Test 4" }
+                ]
+            }]
+        });
+        chart.render();
+        }
+
+        function explodePie (e) {
+            if(typeof (e.dataSeries.dataPoints[e.dataPointIndex].exploded) === "undefined" || !e.dataSeries.dataPoints[e.dataPointIndex].exploded) {
+                e.dataSeries.dataPoints[e.dataPointIndex].exploded = true;
+            } else {
+                e.dataSeries.dataPoints[e.dataPointIndex].exploded = false;
+            }
+            e.chart.render();
+
+        }
+
+        </script>-->
+
 </head>
 <body>
 <h1 class="header" style="border-bottom: 1px solid #9e9e9e;">HCF Dashboard
@@ -23,8 +65,10 @@
         </a>
     </span>
 </h1>
-<div class="error" id="errormsg"></div>
+<!--<div id="chartContainer" style="height: 370px; width: 400px;float:right"></div>-->
 
+
+<div class="error" id="errormsg"></div>
 <form id="dashboardForm">
     <table border=0>
         <tr><td>1. Foundation address:</td><td>
@@ -65,5 +109,6 @@
 </form>
     <div id=viewProposalsTable></div>
 
+<!--<script src="../../canvasjs.js"></script>-->
 </body>
 </html>

@@ -1,7 +1,7 @@
 body{padding:20px}.error{color:red}input.ethAddress,input.ethTx,input.string{width:30em}.abi{display:block;width:100%;height:3em}.contractForm label{display:block}
 
 input[type=text] {
-    width: 50%;
+    width: 500px;
     padding: 1px 1px;
     margin: 2px 0;
     border: none;
@@ -134,4 +134,7 @@ a > input:hover {
     color: #000;
     white-space: nowrap;
 }
+/*.canvasjs-chart-credit {
+    display: none !important;
+}*/
 		

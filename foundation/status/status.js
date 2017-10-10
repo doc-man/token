@@ -57,6 +57,8 @@ jQuery(document).ready(function($) {
                     proposalsTableBody+="<td>"+amount+"</td>";
                     proposalsTableBody+="<td>"+proposal.description+"</td>";
                     var date = new Date(proposal.votingDeadline*1000);
+                    var millisecondsOfProposal = date.getTime();
+                    var millisecondsOfNow = new Date().getTime();
                     var hours = date.getHours();
                     var minutes = "0" + date.getMinutes();
                     var seconds = "0" + date.getSeconds();
@@ -64,12 +66,14 @@ jQuery(document).ready(function($) {
                     proposalsTableBody+="<td>"+timeConverter(proposal.votingDeadline)+"</td>";
                     if(proposal.numberOfVotes > 0) {
                         proposalsTableBody+="<td>"+"<span class='badge badge-pill badge-success cDefault opacity-5'>Success</span>"+"</td>";
-                    } else {
+                    } else if(millisecondsOfNow < millisecondsOfProposal) {
                         proposalsTableBody+="<td>"+"<label class='form-check-label padding-r3'><input type='radio' class='form-check-input' name='vote_"+proposalNumber+"' value='for'>For</label><label class='form-check-label padding-r3'><input type='radio' class='form-check-input' name='vote_"+proposalNumber+"' value='against'>Against</label></div>"
                             + "<input type='button' id='submitVote_"+proposalNumber+"' onclick='submitVoteMain("+proposalNumber+")' value='Submit Vote' class='btn-c btn-primary-c'>"
                             + "</td>";
+                    } else {
+                        proposalsTableBody+="<td>"+"</td>";
                     }
-                    if(proposal.numberOfVotes != 0 && proposal.proposalPassed != true) {
+                    if(proposal.numberOfVotes != 0 && proposal.proposalPassed != true && millisecondsOfNow > millisecondsOfProposal) {
                         proposalsTableBody+="<td>"+"<input type=button id='submitCountVotesBtn' onclick='submitCountVotes("+proposalNumber+")' value='count votes' class='btn-c btn-primary-c'></td>";
                     } else if(proposal.proposalPassed == true) {
                         proposalsTableBody+="<td>"+"<span class='badge badge-pill badge-success cDefault opacity-5'>Success</span>"+"</td>";
