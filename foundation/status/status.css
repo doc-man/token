@@ -7,7 +7,7 @@ input[type=text] {
     border: none;
     font-size:20px;
 }
-.btn {
+.btn-c {
     display: inline-block;
     padding: 2px 5px;
     margin-bottom: 0;
@@ -29,43 +29,43 @@ input[type=text] {
     border-radius: 4px;
 }
 
-.btn-primary {
+.btn-primary-c {
     color: #fff;
     background-color: #337ab7;
     border-color: #2e6da4;
 }
-.btn-primary:hover {
+.btn-primary-c:hover {
     color: #fff;
     background-color: #286090;
     border-color: #204d74;
 }
 
-.btn-success {
+.btn-success-c {
     color: #fff;
     background-color: #5cb85c;
     border-color: #4cae4c;
 }
-.btn-success:hover {
+.btn-success-c:hover {
     color: #fff;
     background-color: #449d44;
     border-color: #398439;
 }
-.btn-default {
+.btn-default-c {
     color: #333;
     background-color: #fff;
     border-color: #ccc;
 }
-.btn-default:hover {
+.btn-default-c:hover {
     color: #333;
     background-color: #e6e6e6;
     border-color: #adadad;
 }
-.btn-danger {
+.btn-danger-c {
     color: #fff;
     background-color: #d9534f;
     border-color: #d43f3a;
 }
-.btn-danger:hover {
+.btn-danger-c:hover {
     color: #fff;
     background-color: #c9302c;
     border-color: #ac2925;
@@ -79,13 +79,12 @@ input[type=text] {
 .dataTables_filter {
     width: 50%;
 }
-.dataTables_filter input {
-    width: 90%;
-}
 .dataTables_filter label {
-    border: 1px solid #585858;
-    border-radius: 5px;
-    background-color: #bdf1df;
+    width: 100%;
+    display: inline-flex;
+}
+.dataTables_filter input {
+    height: 25px;
 }
 .success-print {
     border: 1px solid #30a965;
@@ -105,6 +104,34 @@ input[type=text] {
 table.dataTable span.highlight {
   background-color: #FFFF88;
 }
+.cDefault {
+    cursor: default;
+}
+.opacity-5 {
+    opacity: 0.5;
+}
+.padding-r3 {
+    padding-right: 3px;
+}
+a > input {
+    color: #007bff;
+}
+a > input:hover {
+    color: #0056b3;
+}
+.font-sm {
+    font-size: small;
+}
 
-	
+/*GitHub Icon class*/
+.octicon {
+    display: inline-block;
+    vertical-align: text-top;
+    fill: currentColor;
+}
+.header-logo-invertocat {
+    margin: -1px 15px -1px -2px;
+    color: #000;
+    white-space: nowrap;
+}
 		
