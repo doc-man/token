@@ -110,6 +110,12 @@ table.dataTable span.highlight {
 .opacity-5 {
     opacity: 0.5;
 }
+.opacity-6 {
+    opacity: 0.6;
+}
+.opacity-7 {
+    opacity: 0.7;
+}
 .padding-r3 {
     padding-right: 3px;
 }
@@ -137,4 +143,12 @@ a > input:hover {
 /*.canvasjs-chart-credit {
     display: none !important;
 }*/
-		
+.pie-chart {
+    background: url("../../style/pie-chart-xxl.png"); 
+}
+.cPointer {
+    cursor: pointer;
+}
+.badge-success {
+    background-color: #5cb85c;
+}

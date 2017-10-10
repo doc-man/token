@@ -65,25 +65,25 @@ jQuery(document).ready(function($) {
                     var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
                     proposalsTableBody+="<td>"+timeConverter(proposal.votingDeadline)+"</td>";
                     if(proposal.numberOfVotes > 0) {
-                        proposalsTableBody+="<td>"+"<span class='badge badge-pill badge-success cDefault opacity-5'>Success</span>"+"</td>";
+                        proposalsTableBody+="<td>"+proposal.numberOfVotes+"</td>";
                     } else if(millisecondsOfNow < millisecondsOfProposal) {
-                        proposalsTableBody+="<td>"+"<label class='form-check-label padding-r3'><input type='radio' class='form-check-input' name='vote_"+proposalNumber+"' value='for'>For</label><label class='form-check-label padding-r3'><input type='radio' class='form-check-input' name='vote_"+proposalNumber+"' value='against'>Against</label></div>"
+                        proposalsTableBody+="<td>"+proposal.numberOfVotes+"<label class='form-check-label padding-r3'><input type='radio' class='form-check-input' name='vote_"+proposalNumber+"' value='for'>For</label><label class='form-check-label padding-r3'><input type='radio' class='form-check-input' name='vote_"+proposalNumber+"' value='against'>Against</label></div>"
                             + "<input type='button' id='submitVote_"+proposalNumber+"' onclick='submitVoteMain("+proposalNumber+")' value='Submit Vote' class='btn-c btn-primary-c'>"
                             + "</td>";
                     } else {
-                        proposalsTableBody+="<td>"+"</td>";
+                        proposalsTableBody+="<td>"+proposal.numberOfVotes+"</td>";
                     }
                     if(proposal.numberOfVotes != 0 && proposal.proposalPassed != true && millisecondsOfNow > millisecondsOfProposal) {
                         proposalsTableBody+="<td>"+"<input type=button id='submitCountVotesBtn' onclick='submitCountVotes("+proposalNumber+")' value='count votes' class='btn-c btn-primary-c'></td>";
                     } else if(proposal.proposalPassed == true) {
-                        proposalsTableBody+="<td>"+"<span class='badge badge-pill badge-success cDefault opacity-5'>Success</span>"+"</td>";
+                        proposalsTableBody+="<td>"+"<span class='badge badge-pill badge-success cDefault opacity-6'>Success</span>"+"</td>";
                     } else {
                         proposalsTableBody+="<td>"+"</td>";
                     }
                     if(proposal.proposalPassed == true && proposal.executed != true) {
                         proposalsTableBody+="<td>"+"<input type=button id='submitExecuteProposalBtn' onclick='submitExecuteProposal("+proposalNumber+")' value=execute class='btn-c btn-primary-c'></td>";
                     } else if(proposal.executed == true){
-                        proposalsTableBody+="<td>"+"<span class='badge badge-pill badge-success cDefault opacity-5'>Success</span>"+"</td>";
+                        proposalsTableBody+="<td>"+"<span class='badge badge-pill badge-success cDefault opacity-6'>Success</span>"+"</td>";
                     } else {
                         proposalsTableBody+="<td>"+"</td>";
                     }
@@ -129,12 +129,15 @@ jQuery(document).ready(function($) {
             let contractObj = web3.eth.contract(foundationContract.abi); //The json interface for the contract to instantiate
 
             $('input[name=foundation]','#dashboardForm').val(foundation);
-
+            var x = document.getElementById("gitGubSrcCode");
+            x.style.display = "";
             pContractInstance = contractObj.at(foundation);
 
             pContractInstance.token(function(error, result){
                 if(!error){
                     $('input[name=token]','#dashboardForm').val(result);
+                    var pc = document.getElementById("pieChart");
+                        pc.style.display = "";
                 }else{
                     console.log('Can\'t find token address', error);
                 }

@@ -3,19 +3,19 @@
 <head>
     <title>HCF Dashboard</title>
     <meta charset="UTF-8">
-    <link rel='stylesheet' href='../../style/bootstrap-4/css/bootstrap.min.css' type='text/css'/>
+    <link rel='stylesheet' href='../../style/bootstrap/css/bootstrap.min.css' type='text/css'/>
     <script src="../../jquery.min.js"></script>
     <link rel='stylesheet' href='./status.css' type='text/css'/>
     <link rel='stylesheet' href='../../table/dataTables.min.css' type='text/css'/>
     
-    <script type="text/javascript" src="../../style/bootstrap-4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../style/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../web3.min.js"></script>
     <script type="text/javascript" src="status.js"></script>
     <script type="text/javascript" src="../../table/dataTables.min.js"></script>
     <script type="text/javascript" src="../../table/highlight.js"></script>
     <script type="text/javascript" src="../../table/searchHighlight.min.js"></script>
 
-    <!--<script>
+    <script>
         window.onload = function () {
 
         var chart = new CanvasJS.Chart("chartContainer", {
@@ -54,27 +54,55 @@
 
         }
 
-        </script>-->
+        </script>
 
 </head>
 <body>
-<h1 class="header" style="border-bottom: 1px solid #9e9e9e;">HCF Dashboard
-    <span style="float: right;margin-top: 8px;">
-        <a class="header-logo-invertocat" href="https://github.com/healthchain/token" target="_blank" title="Source code">
-            <svg aria-hidden="true" class="octicon octicon-mark-github" height="32" version="1.1" viewBox="0 0 16 16" width="32"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>
-        </a>
-    </span>
-</h1>
+  <!-- Modal -->
+  <div class="modal fade" id="pieChartModel" role="dialog">
+    <div class="modal-dialog" style="width: 600px;">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Token distribution</h4>
+        </div>
+        <div class="modal-body">
+          <div id="chartContainer" style="height: 370px; width: 100%;margin: auto;"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+<h1 class="header" style="border-bottom: 1px solid #9e9e9e;">HCF Dashboard</h1>
 <!--<div id="chartContainer" style="height: 370px; width: 400px;float:right"></div>-->
 
 
 <div class="error" id="errormsg"></div>
+
 <form id="dashboardForm">
     <table border=0>
         <tr><td>1. Foundation address:</td><td>
-                        <a href="https://rinkeby.etherscan.io/address/0xfc7acfda96972316725512b6109441621ebd2d28" target="_blank"><input type="text" readonly name="foundation" value="" size=100></a></td></tr>        
+            <a href="https://rinkeby.etherscan.io/address/0xfc7acfda96972316725512b6109441621ebd2d28" target="_blank"><input type="text" readonly name="foundation" value="" size=100></a>
+            <span id="gitGubSrcCode" style="display:none">
+                <a class="header-logo-invertocat" href="https://github.com/healthchain/token" target="_blank" title="Source code">
+                    <svg aria-hidden="true" class="octicon octicon-mark-github" height="20" version="1.1" viewBox="0 0 16 16" width="32"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>
+                </a>
+            </span>
+            </td></tr>        
         <tr><td>2. Token address:</td><td>
-            <a href="https://rinkeby.etherscan.io/address/0xfc7acfda96972316725512b6109441621ebd2d28" target="_blank"><input type="text" readonly name="token" value="" size=100></a></td></tr>
+            <a href="https://rinkeby.etherscan.io/address/0xfc7acfda96972316725512b6109441621ebd2d28" target="_blank">
+                <input type="text" readonly name="token" value="" size=100>
+            </a>
+            <span id="pieChart" class="cPointer" style="display:none" data-toggle="modal" data-target="#pieChartModel">
+                <img src="../../style/pie-chart-xxl.png" width="21">
+            </span>
+        </td></tr>
         <tr><td>3. Total number of HLT tokens with foundation:</td><td><input type="text" readonly name="numberOfHLT" value="" size=100></td></tr>
         <tr><td>4. Total number of ether: </td><td><input type="text" readonly name="numberOfEther" value=""></td></tr>
         <tr><td>5. Address of voting contract: </td><td>
@@ -109,6 +137,6 @@
 </form>
     <div id=viewProposalsTable></div>
 
-<!--<script src="../../canvasjs.js"></script>-->
+<script src="../../canvasjs.js"></script>
 </body>
 </html>
