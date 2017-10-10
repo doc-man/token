@@ -129,15 +129,20 @@ jQuery(document).ready(function($) {
             let contractObj = web3.eth.contract(foundationContract.abi); //The json interface for the contract to instantiate
 
             $('input[name=foundation]','#dashboardForm').val(foundation);
-            var x = document.getElementById("gitGubSrcCode");
+            document.getElementById("foundationAddressLink").href="https://rinkeby.etherscan.io/address/"+foundation;
+            var x = document.getElementById("gitGubSrcCodeFun");
             x.style.display = "";
             pContractInstance = contractObj.at(foundation);
 
             pContractInstance.token(function(error, result){
                 if(!error){
+                    document.getElementById("tokenAddressLick").href="https://rinkeby.etherscan.io/address/"+result;
                     $('input[name=token]','#dashboardForm').val(result);
                     var pc = document.getElementById("pieChart");
                         pc.style.display = "";
+                        
+                    var x = document.getElementById("gitGubSrcCodeToken");
+                    x.style.display = "";
                 }else{
                     console.log('Can\'t find token address', error);
                 }
@@ -162,6 +167,7 @@ jQuery(document).ready(function($) {
 
             pContractInstance.votingContract(function(error, result){
                 if(!error){
+                    document.getElementById("votingAddressLick").href="https://rinkeby.etherscan.io/address/"+result;
                     $('input[name=votingContract]','#dashboardForm').val(result);
                     loadContract(votingContractUrl, function(data){
                         votingContract = data;
@@ -174,6 +180,9 @@ jQuery(document).ready(function($) {
                             if(!error){
                                 let amount = web3.fromWei(result, 'ether');
                                 $('input[name=minimumQuorum]','#dashboardForm').val(amount);
+                                
+                                var x = document.getElementById("gitGubSrcCodeVoting");
+                                x.style.display = "";
                             }else{
                                 console.log('Can\'t find minimum quorum', error);
                             }
