@@ -152,3 +152,10 @@ a > input:hover {
 .badge-success {
     background-color: #5cb85c;
 }
+.icon-st {
+    font-size: 20px;
+    color: grey;
+}
+.icon-st:hover {
+    color: #557fff;
+}
