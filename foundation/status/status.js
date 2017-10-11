@@ -12,7 +12,6 @@ jQuery(document).ready(function($) {
     function loadContract(url, callback){
         $.ajax(url,{'dataType':'json', 'cache':'false', 'data':{'t':Date.now()}}).done(callback);
     }
-
    // Ref: https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#partly_sunny-web3---ethereum-browser-environment-check     
    window.addEventListener('load', function() {
     
@@ -169,6 +168,8 @@ jQuery(document).ready(function($) {
                 if(!error){
                     document.getElementById("votingAddressLick").href="https://rinkeby.etherscan.io/address/"+result;
                     $('input[name=votingContract]','#dashboardForm').val(result);
+                    var x = document.getElementById("gitGubSrcCodeVoting");
+                    x.style.display = "";
                     loadContract(votingContractUrl, function(data){
                         votingContract = data;
                         let contractObj = web3.eth.contract(votingContract.abi); //The json interface for the contract to instantiate
@@ -180,9 +181,9 @@ jQuery(document).ready(function($) {
                             if(!error){
                                 let amount = web3.fromWei(result, 'ether');
                                 $('input[name=minimumQuorum]','#dashboardForm').val(amount);
-                                
-                                var x = document.getElementById("gitGubSrcCodeVoting");
+                                var x = document.getElementById("initializeSimpleVotingBtn");
                                 x.style.display = "";
+                                
                             }else{
                                 console.log('Can\'t find minimum quorum', error);
                             }
@@ -422,6 +423,36 @@ jQuery(document).ready(function($) {
                 }
             );
         });
+    });
+
+    $('#initializeSimpleVotingBtn').click(function(){
+        var mainForm = $('#dashboardForm'); 
+        var minimumQuorum = $('input[name=minimumQuorum]', mainForm).val();
+        if(minimumQuorum != ''){
+            loadContract(foundationContractUrl, function(data){
+                foundationContract = data;
+                let votingAddress = $('input[name=votingContract]', mainForm).val();
+                console.log('votingAddress:', votingAddress);   
+                let foundationAddress = $('input[name=foundation]', mainForm).val();
+                console.log('foundation:', foundation);   
+                let contractObj = web3.eth.contract(foundationContract.abi);
+                let contractInstance = contractObj.at(foundationAddress);
+                console.log('Calling '+foundationContract.contract_name+'.initVotingContract() with parameters:\n', 
+                    votingAddress,
+                    'ABI', JSON.stringify(foundationContract.abi));
+                contractInstance.initVotingContract(
+                    votingAddress,
+                    function(error, result){
+                        if(!error){
+                            console.log("Init tx: ",result);
+                            $('input[name=publishedTx]','#initializeFoundationForm').val(result);
+                        }else{
+                            console.error(error)
+                        }
+                    }
+                );
+            });
+        }
     });
     
     $('#changeDebatingPeriodBtn').click(function(){
